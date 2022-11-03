@@ -1,5 +1,4 @@
-from sqlalchemy import true
-from flask import Flask, request, session, redirect, url_for
+from flask import Flask, request, session, redirect, url_for, render_template
 from cas import CASClient
 
 app = Flask(__name__)
@@ -14,7 +13,8 @@ cas_client = CASClient(
 
 @app.route("/")
 def index():
-    return redirect(url_for("login"))
+    # return redirect(url_for("login"))
+    return render_template("home.html")
 
 
 @app.route("/login")
@@ -75,5 +75,10 @@ def profile(method=["GET"]):
     return 'Login required. <a href="/login">Login</a>', 403
 
 
+@app.route("/home")
+def home():
+    return render_template("home.html")
+
+
 if __name__ == "__main__":
-    app.run(debug=true)
+    app.run(debug=True)
