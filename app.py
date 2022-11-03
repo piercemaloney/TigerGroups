@@ -15,8 +15,7 @@ cas_client = CASClient(
 
 @app.route("/")
 def index():
-    # return redirect(url_for("login")) # Commented out to ignore CAS while testing
-    home()
+    return render_template("home.html")
 
 
 @app.route("/login")

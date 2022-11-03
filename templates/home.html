@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Bootstrap demo</title>
+        <title>TigerGroups Home</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     </head>
     <body>
@@ -13,13 +13,41 @@
                     <img src="https://cdn-icons-png.flaticon.com/512/32/32441.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
                     TigerGroups
                 </a>
+                <a class="navbar-brand navbar-right" href="#">
+                    <img src="https://www.freeiconspng.com/uploads/account-profile-user-icon--icon-search-engine-10.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
+                </a>
             </div>
         </nav>
         
         <div class="container">
             <div class="row">
                 <div class="h-50 col-md-3 no-float">Groups</div>
-                <div class="col-md-6 no-float">Content</div>
+                <div class="col-md-3 no-float">Content</div>
+                <button type="button" class="col-md-3 btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#NewPost">+ New Post</button>
+                <div class="modal" id="NewPost">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">New Post</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div>
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Body</label>
+                                        <textarea class="form-control" rows="8"></textarea>
+                                    </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary float-end">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-3 no-float">Information</div>
             </div>
         </div>
@@ -42,7 +70,30 @@
                         </div>
                         <p class="mb-1">This is the body text from post #{{i+1}}.</p>
                         <div class="d-flex w-100 justify-content-between">
-                            <small><button type="button" class="btn btn-primary">♥ Like</button></small>
+                            <div>
+                                <button type="button" class="btn btn-outline-dark btn-sm">♥ Like</button>
+                                <button type="button" class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#NewComment">Comment</button>
+                                <div class="modal" id="NewComment">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">New Comment</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form>
+                                                    <div>
+                                                        <label class="form-label">Body</label>
+                                                        <textarea class="form-control" rows="8"></textarea>
+                                                    </div>
+                                                    <br>
+                                                    <button type="submit" class="btn btn-primary float-end">Submit</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <small>{{ i }} likes</small>
                         </div>
                       </li>
