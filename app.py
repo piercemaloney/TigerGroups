@@ -1,28 +1,49 @@
 from flask import Flask, request, session, redirect, url_for, render_template
 from cas import CASClient
+import get_methods
+import post_methods
+import strings
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+
 
 app = Flask(__name__)
 app.secret_key = "V7nlCN90LPHOTA9PGGyf"  # placeholder
-app.config['ENV'] = 'development'
-app.config['DEBUG'] = True
+app.config["ENV"] = "development"
+app.config["DEBUG"] = True
 
 cas_client = CASClient(
     version=3,
-    service_url="http://localhost:5000/login?next=%2Fprofile",
+    service_url="http://localhost:5000/login?next=%2Fhome",
     server_url="https://fed.princeton.edu/cas/",
 )
 
 
+client = MongoClient(strings.uri)
+
+
+def is_user_in_group(group_id):
+    # check if user is authorized
+    user_group_ids = get_methods.get_user_info(client, session["username"])[
+        strings.key_user_groupids
+    ]
+    flag = False
+    for group_id in user_group_ids:
+        if group_id == ObjectId(group_id):
+            flag = True
+    return flag
+
+
 @app.route("/")
 def index():
-    return render_template("home.html")
+    return home()
 
 
 @app.route("/login")
 def login():
     if "username" in session:
         # Already logged in
-        return redirect(url_for("profile"))
+        return redirect(url_for("home"))
 
     next = request.args.get("next")
     ticket = request.args.get("ticket")
@@ -78,7 +99,73 @@ def profile(method=["GET"]):
 
 @app.route("/home")
 def home():
-    return render_template("home.html")
+    # get groupid
+    groupid = ObjectId("636344bcd77f507de97e277e")
+
+    # get user info
+    netid = "user1"
+    user_info = get_methods.get_user_info(client, netid)
+
+    # get information to display posts
+    current_group = get_methods.get_group(client, groupid)
+    groups = get_methods.get_groups(client, user_info[strings.key_user_groupids])
+    posts = get_methods.get_posts(client, current_group[strings.key_group_postids])
+
+    return render_template(
+        "home.html", posts=posts, groups=groups, groupid=groupid, strings=strings
+    )
+
+
+@app.route("/get_posts")
+def get_posts():
+    # get the query
+    request_group_id = "Princeton University"
+    if request.args.get("groupid") is not None:
+        request_group_id = request.args.get("groupid")
+
+    # check if user is authorized
+    is_user_valid = is_user_in_group(request_group_id)
+    if is_user_valid is False:
+        return redirect(url_for("permission_denied"))
+
+    # get information to display posts
+    current_group = get_methods.get_group(client, ObjectId(request_group_id))
+    posts = get_methods.get_posts(client, current_group[strings.key_group_postids])
+
+    return render_template("posts.html", posts=posts, strings=strings)
+
+
+@app.route("/permission_denied")
+def permission_denied():
+    return redirect(url_for("login"))
+
+
+@app.route("/new_post")
+def new_post():
+    # get the values
+    title, body, group_id = "", "", ""
+    if request.args.get("title") is not None:
+        title = request.args.get("title")
+    if request.args.get("body") is not None:
+        body = request.args.get("body")
+    if request.args.get("group_id") is not None:
+        group_id = request.args.get("group_id")
+
+    print("title, body, group_id: ", title, body, group_id)
+
+    # if post is empty
+    if title == "" or body == "" or group_id == "":
+        return redirect(url_for("login"))
+
+    # check if user is authorized
+    is_user_valid = is_user_in_group(group_id)
+    if is_user_valid is False:
+        return redirect(url_for("permission_denied"))
+
+    post_methods.insert_post(
+        client, session["username"], ObjectId(group_id), title, body
+    )
+    return redirect(url_for("login"))
 
 
 if __name__ == "__main__":

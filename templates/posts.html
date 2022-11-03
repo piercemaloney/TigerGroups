@@ -1,0 +1,51 @@
+<div class="list-group col-6">
+  {% for post in posts: %}
+  <li class="list-group-item flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{post[strings.key_post_title]}}</h5>
+      <small>3 days ago</small>
+    </div>
+    <p class="mb-1">{{post[strings.key_post_body]}}</p>
+    <div class="d-flex w-100 justify-content-between">
+      <div>
+        <button type="button" class="btn btn-outline-dark btn-sm">
+          ♥ Like
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-dark btn-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#NewComment">
+          Comment
+        </button>
+        <div class="modal" id="NewComment">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">New Comment</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div>
+                    <label class="form-label">Body</label>
+                    <textarea class="form-control" rows="8"></textarea>
+                  </div>
+                  <br />
+                  <button type="submit" class="btn btn-primary float-end">
+                    Submit
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <small>{{post[strings.key_post_numlike]}} likes</small>
+    </div>
+  </li>
+  {% endfor %}
+</div>
