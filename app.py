@@ -3,6 +3,8 @@ from cas import CASClient
 
 app = Flask(__name__)
 app.secret_key = "V7nlCN90LPHOTA9PGGyf"  # placeholder
+app.config['ENV'] = 'development'
+app.config['DEBUG'] = True
 
 cas_client = CASClient(
     version=3,
@@ -13,8 +15,8 @@ cas_client = CASClient(
 
 @app.route("/")
 def index():
-    # return redirect(url_for("login"))
-    return render_template("home.html")
+    # return redirect(url_for("login")) # Commented out to ignore CAS while testing
+    home()
 
 
 @app.route("/login")
