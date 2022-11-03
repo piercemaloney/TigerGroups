@@ -40,7 +40,11 @@
                           <h5 class="mb-1">Title text of post #{{i+1}} from group</h5>
                           <small>3 days ago</small>
                         </div>
-                        <p class="mb-1">This is the body text from post #{{i+1}}.</small>
+                        <p class="mb-1">This is the body text from post #{{i+1}}.</p>
+                        <div class="d-flex w-100 justify-content-between">
+                            <small><button type="button" class="btn btn-primary">♥ Like</button></small>
+                            <small>{{ i }} likes</small>
+                        </div>
                       </li>
                     {% endfor %}
                 </div>
