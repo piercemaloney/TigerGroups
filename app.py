@@ -36,7 +36,7 @@ def is_user_in_group(group_id):
 
 @app.route("/")
 def index():
-    return home()
+    return login()
 
 
 @app.route("/login")
