@@ -20,6 +20,7 @@ cas_client = CASClient(
 
 
 client = MongoClient(strings.uri)
+SUCCESS = "200 OK"
 
 
 def is_user_in_group(group_id):
@@ -103,7 +104,8 @@ def home():
     groupid = ObjectId("636344bcd77f507de97e277e")
 
     # get user info
-    netid = "user1"
+    netid = session["username"]
+    print(netid)
     user_info = get_methods.get_user_info(client, netid)
 
     # get information to display posts
@@ -131,6 +133,11 @@ def get_posts():
     # get information to display posts
     current_group = get_methods.get_group(client, ObjectId(request_group_id))
     posts = get_methods.get_posts(client, current_group[strings.key_group_postids])
+
+    # convert id to str
+    for i in range(len(posts)):
+        posts[i]["_id"] = str(posts[i]["_id"])
+    print(posts)
 
     return render_template("posts.html", posts=posts, strings=strings)
 
@@ -188,6 +195,46 @@ def new_group():
         client, session["username"], group_name, description, color
     )
     return redirect(url_for("login"))
+
+
+@app.route("/get_comments", methods=["GET"])
+def get_comments():
+    # get the values
+    post_id, group_id = "", ""
+    if request.args.get("post_id") is not None:
+        post_id = request.args.get("post_id")
+    print(post_id)
+
+    # if post is empty
+    if post_id == "":
+        return redirect(url_for("login"))
+
+    # check if user is authorized
+    is_user_valid = is_user_in_group(group_id)
+    if is_user_valid is False:
+        return redirect(url_for("permission_denied"))
+
+    comment_ids = get_methods.get_post(client, ObjectId(post_id))[
+        strings.key_post_commentids
+    ]
+    for i in range(len(comment_ids)):
+        comment_ids[i] = ObjectId(comment_ids[i])
+    comments = get_methods.get_comments(client, comment_ids)
+    return render_template(
+        "comments.html", comments=comments, strings=strings, post_id=post_id
+    )
+
+
+@app.route("/new_comment", methods=["POST"])
+def new_comment():
+    # get the values
+    post_id = request.form.get("post_id")
+    content = request.form.get("content")
+    user_id = session["username"]
+
+    post_methods.insert_comment(client, user_id, ObjectId(post_id), content)
+
+    return SUCCESS
 
 
 if __name__ == "__main__":
