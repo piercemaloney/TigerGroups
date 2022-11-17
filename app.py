@@ -167,6 +167,28 @@ def new_post():
     )
     return redirect(url_for("login"))
 
+@app.route("/new_group")
+def new_group():
+    # get the values
+    group_name, description, color = "", "", ""
+    if request.args.get("group_name") is not None:
+        group_name = request.args.get("group_name")
+    if request.args.get("description") is not None:
+        description = request.args.get("description")
+    if request.args.get("color") is not None:
+        color = request.args.get("color")
+
+    print("group_name, description, color: ", group_name, description, color)
+
+    # if new group is empty
+    if group_name == "" or description == "" or color == "":
+        return redirect(url_for("login"))
+
+    post_methods.insert_group(
+        client, session["username"], group_name, description, color
+    )
+    return redirect(url_for("login"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
