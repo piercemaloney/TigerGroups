@@ -66,6 +66,25 @@ function getPosts(id) {
   console.log("Get posts with groupid: " + id);
 }
 
+function handle_like_response(data, post_id) {
+  console.log("got reponse post_id= " + post_id);
+  $("#" + post_id).html(data);
+}
+
+function likePost(post_id) {
+  let url = "/like_post";
+
+  if (request != null) request.abort();
+  request = $.ajax({
+    type: "POST",
+    data: {
+      post_id: post_id,
+    },
+    url: url,
+    success: handle_like_response,
+  });
+}
+
 function setup() {
   getPosts("636344bcd77f507de97e277e"); // default post
 }
