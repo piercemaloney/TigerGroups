@@ -5,6 +5,7 @@
 #-----------------------------------------------------------------------
 
 from database.strings import * 
+from bson.objectid import ObjectId
 
 #-----------------------------------------------------------------------
 
@@ -95,7 +96,7 @@ def insert_user(client, netid):
     new_user = {
         '_id': netid,
         key_user_commentids: [],
-        key_user_groupids: [],
+        key_user_groupids: [ObjectId("636344bcd77f507de97e277e")],
         key_user_postids: [],
         key_user_likedcommentids: [],
         key_user_likedpostids: [],
