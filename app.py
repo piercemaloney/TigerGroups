@@ -2,6 +2,7 @@ from flask import Flask, request, session, redirect, url_for, render_template
 from cas import CASClient
 import database.get_methods as get_methods
 import database.post_methods as post_methods
+import database.moderator_methods as moderator_methods
 import database.strings as strings
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -24,14 +25,14 @@ client = MongoClient(strings.uri)
 SUCCESS = "200 OK"
 
 
-def is_user_in_group(group_id):
+def is_user_in_group(user_group_id):
     # check if user is authorized
     user_group_ids = get_methods.get_user_info(client, session["username"])[
         strings.key_user_groupids
     ]
     flag = False
     for group_id in user_group_ids:
-        if group_id == ObjectId(group_id):
+        if group_id == ObjectId(user_group_id):
             flag = True
     return flag
 
@@ -123,7 +124,6 @@ def home():
         "home.html", posts=posts, groups=groups, groupid=groupid, strings=strings
     )
 
-
 @app.route("/get_posts")
 def get_posts():
     # get the query
@@ -139,6 +139,7 @@ def get_posts():
     # get information to display posts
     current_group = get_methods.get_group(client, ObjectId(request_group_id))
     posts = get_methods.get_posts(client, current_group[strings.key_group_postids])
+    users = current_group[strings.key_group_netids]
 
     for i in range(len(posts)):
 
@@ -161,7 +162,7 @@ def get_posts():
         # convert object id to str
         posts[i]["_id"] = str(posts[i]["_id"])
     
-    return render_template("posts.html", posts=posts, strings=strings, key_post_date_created = "date_created")
+    return render_template("posts.html", posts=posts, users=users, strings=strings, key_post_date_created = "date_created")
 
 
 @app.route("/permission_denied")
@@ -223,6 +224,28 @@ def new_group():
     )
     return redirect(url_for("login"))
 
+@app.route("/add_user")
+def add_user():
+    print("hi")
+    # get the values
+    new_user = ""
+    if request.args.get("new_user") is not None:
+        new_user = request.args.get("new_user")
+    if request.args.get("group_id") is not None:
+        group_id = request.args.get("group_id")
+    print("new_user, group_id: ", new_user, group_id)
+
+    # if user doesn't exist return
+    user_info = get_methods.get_user_info(client, new_user)
+    if user_info == None:
+        return redirect(url_for("login"))
+
+    # otherwise add user to group
+    moderator_methods.add_user_to_group(client, ObjectId(group_id), new_user)
+    print(new_user)
+    print(group_id)
+    return redirect(url_for("login"))
+
 
 @app.route("/get_comments", methods=["GET"])
 def get_comments():
@@ -237,9 +260,9 @@ def get_comments():
         return redirect(url_for("login"))
 
     # check if user is authorized
-    is_user_valid = is_user_in_group(group_id)
-    if is_user_valid is False:
-        return redirect(url_for("permission_denied"))
+    # is_user_valid = is_user_in_group(group_id)
+    # if is_user_valid is False:
+    #    return redirect(url_for("permission_denied"))
 
     comment_ids = get_methods.get_post(client, ObjectId(post_id))[
         strings.key_post_commentids

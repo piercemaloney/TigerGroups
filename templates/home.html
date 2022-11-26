@@ -15,8 +15,11 @@
   <body>
     <div class="container-fluid"> {% include "header.html" %} </div>
 
+    <!-- Secondary Header (Groups, Content Information) -->
     <div class="container-fluid">
       <div class="row">
+
+        <!-- New Group Button -->
         <div class="d-flex col-md-3 no-float align-items-center justify-content-between">
           <div><h2>Groups</h2></div>
           <div><button
@@ -27,7 +30,7 @@
             + New Group
           </button></div>
         </div>
-        
+        <!-- New Group Modal -->
         <div class="modal" id="NewGroup">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -86,7 +89,10 @@
           </div>
         </div>
 
-        <div class="d-flex col-md-6 no-float align-items-center justify-content-between">
+        <!-- New Post Button -->
+        <div class="list-group col">
+          <div class="row">
+        <div class="d-flex px-md-3 col-8 no-float align-items-center justify-content-between">
           <div> <h2>Content</h2></div>
           <div><button
             type="button"
@@ -96,6 +102,21 @@
             + New Post
           </button></div>
         </div>
+        <!-- Add User Button -->
+        <div class="d-flex col-4 no-float align-items-center justify-content-between">
+          <h2>Information</h2>
+          <div><button
+            type="button"
+            class="btn btn-primary btn-outline btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#AddUser">
+            + Add User
+          </button></div>
+          </div>
+        </div>
+      </div>
+
+        <!-- New Post Modal -->
         <div class="modal" id="NewPost">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -129,20 +150,47 @@
           </div>
         </div>
 
-        <div class="col-md-3 no-float align-items-center"><h2>Information</h2></div>
+        <!-- Add User Modal -->
+        <div class="modal" id="AddUser">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Add User</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <form action="/add_user" onsubmit="$('#group_id_user').val(state.current_group_id);" method="get">
+                  <div>
+                    <label class="form-label">netid</label>
+                    <input type="text" name="new_user" class="form-control" />
+                  </div>
+                  <input type="hidden" name="group_id" value="" id="group_id_user" />
+                  <br />
+                  <button type="submit" class="btn btn-primary float-end">
+                    Add User
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
 
       </div>
     </div>
 
+    <!-- Group -->
     <div class="container-fluid">
       <div class="row">
-        <div class="list-group col-3">
+        <div class="list-group col-3 no-float">
           <div class="list-group" id="list-tab" role="tablist">
             {% for group in groups: %}
             <a
               class="list-group-item list-group-item-action {{group[strings.key_group_color]}}"
               id="{{group['_id']}}"
-              onclick='getPosts("{{group['_id']}}"); state.current_group_id = "{{group['_id']}}";'
+              onclick='getPosts("{{group['_id']}}");  state.current_group_id = "{{group['_id']}}";'
               data-toggle="list"
               role="tab"
               >{{group[strings.key_group_name]}}</a
@@ -151,7 +199,7 @@
           </div>
         </div>
 
-        <div class="list-group col-6" id="posts_view"></div>
+        <div class="list-group col" id="posts_view"></div>
       </div>
     </div>
 
