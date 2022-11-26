@@ -3,8 +3,13 @@
 {% for post in posts: %}
 <li class="list-group-item flex-column align-items-start">
   <div class="d-flex w-100 justify-content-between">
-    <h5 class="mb-1">{{post[strings.key_post_title]}}</h5>
-    <small>{{post[key_post_date_created]}}</small>
+    <div><h5 class="mb-1">{{post[strings.key_post_title]}}</h5></div>
+    <div>
+      <small>{{post[key_post_date_created]}}</small>
+      <!-- { if moderator } -->
+      <button type="button" class="btn-close align-middle" aria-label="Close"></button>
+      <!-- { endif } -->
+    </div>
   </div>
   <p class="mb-1">{{post[strings.key_post_body]}}</p>
   <div class="d-flex w-100 justify-content-between">
