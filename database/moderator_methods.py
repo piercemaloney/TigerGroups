@@ -111,6 +111,7 @@ def add_user_to_group(client, groupid, netid):
 
     # update group table and user table
     group_col.update_one({'_id': groupid}, {'$push': {key_group_netids: netid}})
+    print("sucess")
     user_col.update_one({'_id': netid}, {'$push': {key_user_groupids: groupid}})
 
 #-----------------------------------------------------------------------
