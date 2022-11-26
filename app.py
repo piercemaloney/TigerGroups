@@ -207,11 +207,14 @@ def new_group():
         description = request.args.get("description")
     if request.args.get("color") is not None:
         color = request.args.get("color")
+    else:
+        # default color is light bg with dark text
+        color = "bg-light text-dark"
 
     print("group_name, description, color: ", group_name, description, color)
 
     # if new group is empty
-    if group_name == "" or description == "" or color == "":
+    if group_name == "" or description == "":
         return redirect(url_for("login"))
 
     print("asdf")
