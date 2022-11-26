@@ -1,10 +1,11 @@
 from flask import Flask, request, session, redirect, url_for, render_template
 from cas import CASClient
-import get_methods
-import post_methods
-import strings
+import database.get_methods as get_methods
+import database.post_methods as post_methods
+import database.strings as strings
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+import datetime
 
 
 app = Flask(__name__)
@@ -134,12 +135,30 @@ def get_posts():
     current_group = get_methods.get_group(client, ObjectId(request_group_id))
     posts = get_methods.get_posts(client, current_group[strings.key_group_postids])
 
-    # convert id to str
     for i in range(len(posts)):
-        posts[i]["_id"] = str(posts[i]["_id"])
-    print(posts)
 
-    return render_template("posts.html", posts=posts, strings=strings)
+        # create date generation time field (date post was created)
+        def utc_to_local(utc_dt):
+            return utc_dt.replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
+        today = datetime.datetime.now()
+        created = utc_to_local(posts[i]["_id"].generation_time).replace(tzinfo=None) 
+
+        time_delta = (today - created).total_seconds()
+        if time_delta < 60:
+            posts[i]["date_created"] = str(round(time_delta)) + " seconds ago"
+        elif time_delta < 3600:
+            posts[i]["date_created"] = str(round(time_delta/60)) + " minutes ago"
+        elif time_delta < 86400:
+            posts[i]["date_created"] = str(round(time_delta/3600)) + " hours ago"
+        else:
+            posts[i]["date_created"] = created.strftime('%B %d')
+
+        # convert object id to str
+        posts[i]["_id"] = str(posts[i]["_id"])
+    
+    print(posts)
+    
+    return render_template("posts.html", posts=posts, strings=strings, key_post_date_created = "date_created")
 
 
 @app.route("/permission_denied")

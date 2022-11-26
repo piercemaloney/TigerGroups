@@ -4,10 +4,10 @@
 
 #-----------------------------------------------------------------------
 
-from post_methods import *
-from moderator_methods import *
-from get_methods import *
-from strings import uri
+from database.post_methods import *
+from database.moderator_methods import *
+from database.get_methods import *
+from database.strings import uri
 from pymongo import MongoClient
 
 #-----------------------------------------------------------------------

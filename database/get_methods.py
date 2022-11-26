@@ -4,9 +4,10 @@
 
 #-----------------------------------------------------------------------
 
-from strings import (database_name, user_collection_title, 
+from database.strings import (database_name, user_collection_title, 
                       comment_collection_title, post_collection_title, 
                       group_collection_title) 
+import pymongo
 
 #-----------------------------------------------------------------------
 
@@ -19,7 +20,7 @@ def get_comment(client, commentid):
 def get_comments(client, commentids):
     db = client[database_name]
     comment_table = db[comment_collection_title]
-    comment_list = list(comment_table.find({'_id': {'$in': commentids}}))
+    comment_list = list(comment_table.find({'_id': {'$in': commentids}}.sort('_id', -1)))
     return comment_list
 
 #-----------------------------------------------------------------------
@@ -33,7 +34,7 @@ def get_post(client, postid):
 def get_posts(client, postids):
     db = client[database_name]
     post_table = db[post_collection_title]
-    post_list = list(post_table.find({"_id": {'$in' : postids}}))
+    post_list = list(post_table.find({"_id": {'$in' : postids}}).sort('_id', -1))
     return post_list
     
 #-----------------------------------------------------------------------

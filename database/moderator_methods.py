@@ -4,8 +4,8 @@
 
 #-----------------------------------------------------------------------
 
-from strings import * 
-from get_methods import *
+from database.strings import * 
+from database.get_methods import *
 
 #-----------------------------------------------------------------------
 
