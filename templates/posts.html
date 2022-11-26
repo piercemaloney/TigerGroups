@@ -14,7 +14,7 @@
   <p class="mb-1">{{post[strings.key_post_body]}}</p>
   <div class="d-flex w-100 justify-content-between">
     <div>
-      <button type="button" class="btn btn-outline-dark btn-sm">
+      <button type="button" class="btn btn-outline-dark btn-sm" onclick="like_post({{'"'}}{{post[strings.key_post_id]}}{{'"'}})">
         ♥ Like
       </button>
       <button
