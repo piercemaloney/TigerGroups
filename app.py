@@ -25,14 +25,14 @@ client = MongoClient(strings.uri)
 SUCCESS = "200 OK"
 
 
-def is_user_in_group(group_id):
+def is_user_in_group(user_group_id):
     # check if user is authorized
     user_group_ids = get_methods.get_user_info(client, session["username"])[
         strings.key_user_groupids
     ]
     flag = False
     for group_id in user_group_ids:
-        if group_id == ObjectId(group_id):
+        if group_id == ObjectId(user_group_id):
             flag = True
     return flag
 
@@ -257,9 +257,9 @@ def get_comments():
         return redirect(url_for("login"))
 
     # check if user is authorized
-    is_user_valid = is_user_in_group(group_id)
-    if is_user_valid is False:
-        return redirect(url_for("permission_denied"))
+    # is_user_valid = is_user_in_group(group_id)
+    # if is_user_valid is False:
+    #    return redirect(url_for("permission_denied"))
 
     comment_ids = get_methods.get_post(client, ObjectId(post_id))[
         strings.key_post_commentids

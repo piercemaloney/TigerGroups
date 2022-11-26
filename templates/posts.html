@@ -15,37 +15,13 @@
       <button
         type="button"
         class="btn btn-outline-dark btn-sm"
-        data-bs-toggle="modal"
-        data-bs-target="#NewComment">
+        onclick="get_comments({{'"'}}{{post['_id']}}{{'"'}});">
         Comment
       </button>
-      <div class="modal" id="NewComment">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">New Comment</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div>
-                  <label class="form-label">Body</label>
-                  <textarea class="form-control" rows="8"></textarea>
-                </div>
-                <br />
-                <button type="submit" class="btn btn-primary float-end">
-                  Submit
-                </button>
-              </form>
-            </div>
-          </div> -->
       </div>
-    </div>
     <small>{{post[strings.key_post_numlike]}} likes</small>
   </div>
+  <div id="{{post['_id']}}"></div>
 </li>
 {% endfor %}
 </div>
