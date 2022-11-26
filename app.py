@@ -212,8 +212,6 @@ def new_group():
         # default color is light bg with dark text
         color = "bg-light text-dark"
 
-    print("group_name, description, color: ", group_name, description, color)
-
     # if new group is empty
     if group_name == "" or description == "":
         return redirect(url_for("login"))
