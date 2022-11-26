@@ -286,6 +286,15 @@ def new_comment():
 
     return SUCCESS
 
+@app.route("/like_post", methods=["POST"])
+def like_post():
+    # get the values
+    post_id = request.form.get("post_id")
+    user_id = session["username"]
+
+    post_methods.like_post(client, user_id, ObjectId(post_id))
+
+    return SUCCESS
 
 if __name__ == "__main__":
     app.run(debug=True)
