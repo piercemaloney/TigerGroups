@@ -87,11 +87,11 @@ def insert_group(client, netid, group_name, group_description, group_color):
 #-----------------------------------------------------------------------
 
 def insert_user(client, netid):
- 
+
     # get collection
     db = client[database_name]
     user_col = db[user_collection_title]
-    
+
     # insert new user into table
     new_user = {
         '_id': netid,
@@ -106,51 +106,62 @@ def insert_user(client, netid):
 #-----------------------------------------------------------------------
 
 def like_comment(client, netid, commentid):
- 
     # get collection
     db = client[database_name]
     user_col = db[user_collection_title]
     comment_col = db[comment_collection_title]
-
-    # update numlike in comment collection and likedcommentids in user collection
-    comment_col.update_one({"_id": commentid}, {"$inc": {key_comment_numlike: 1}})
-    comment_col.update_one({"_id": commentid}, {"$push": {key_comment_userlike: netid}})
-    user_col.update_one({"_id": netid}, {"$push": {key_user_likedcommentids: commentid}})
+    comment = comment_col.find_one({"_id": commentid})
+    # only updates the database if the user has not already liked the comment
+    if netid not in comment["key_comment_userlike"]: 
+        # update numlike in comment collection and likedcommentids in user collection
+        comment_col.update_one({"_id": commentid}, {"$inc": {key_comment_numlike: 1}})
+        comment_col.update_one({"_id": commentid}, {"$push": {key_comment_userlike: netid}})
+        user_col.update_one({"_id": netid}, {"$push": {key_user_likedcommentids: commentid}})
 
 
 def dislike_comment(client, netid, commentid):
- 
     # get collection
     db = client[database_name]
     user_col = db[user_collection_title]
     comment_col = db[comment_collection_title]
-    
-    comment_col.update_one({"_id": commentid}, {"$inc": {key_comment_numlike: -1}})
-    comment_col.update_one({"_id": commentid}, {"$pull": {key_comment_userlike: netid}})
-    user_col.update_one({"_id": netid}, {"$pull": {key_user_likedcommentids: commentid}})
+    comment = comment_col.find_one({"_id": commentid})
+    # only updates the database if the user has already like the comment
+    if netid in comment["key_comment_userlike"]:
+        comment_col.update_one({"_id": commentid}, {"$inc": {key_comment_numlike: -1}})
+        comment_col.update_one({"_id": commentid}, {"$pull": {key_comment_userlike: netid}})
+        user_col.update_one({"_id": netid}, {"$pull": {key_user_likedcommentids: commentid}})
 
 #-----------------------------------------------------------------------
 
 def like_post(client, netid, postid):
- 
     # get collection
     db = client[database_name]
     user_col = db[user_collection_title]
     post_col = db[comment_collection_title]
+    post = post_col.find_one({"_id": postid})
+    # only update the db if the user has NOT already liked the post
+    if netid not in post["key_post_userlike"]:
+        # update numlike in comment collection and likedpostids in user collection
+        post_col.update_one({"_id": postid}, {"$inc": {key_post_numlike: 1}})
+        post_col.update_one({"_id": postid}, {"$push": {key_comment_userlike: netid}})
+        user_col.update_one({"_id": netid}, {"$push": {key_user_likedpostids: postid}})
+    # maybe make it into a single function since there's just one button for liking/disliking
+    else:
+        # update numlike in comment collection and likedpostids in user collection
+        post_col.update_one({"_id": postid}, {"$inc": {key_post_numlike: -1}})
+        post_col.update_one({"_id": postid}, {"$pull": {key_comment_userlike: netid}})
+        user_col.update_one({"_id": netid}, {"$pull": {key_user_likedpostids: postid}})
 
-    # update numlike in comment collection and likedpostids in user collection
-    post_col.update_one({"_id": postid}, {"$inc": {key_post_numlike: 1}})
-    post_col.update_one({"_id": postid}, {"$push": {key_comment_userlike: netid}})
-    user_col.update_one({"_id": netid}, {"$push": {key_user_likedpostids: postid}})
 
 def dislike_post(client, netid, postid):
- 
     # get collection
     db = client[database_name]
     user_col = db[user_collection_title]
     post_col = db[comment_collection_title]
-
-    # update numlike in comment collection and likedpostids in user collection
-    post_col.update_one({"_id": postid}, {"$inc": {key_post_numlike: -1}})
-    post_col.update_one({"_id": postid}, {"$pull": {key_comment_userlike: netid}})
-    user_col.update_one({"_id": netid}, {"$pull": {key_user_likedpostids: postid}})
+    post = post_col.find_one({"_id": postid})
+    # only update the db if the user has already liked the post
+    if netid in post["key_post_userlike"]:
+        # update numlike in comment collection and likedpostids in user collection
+        post_col.update_one({"_id": postid}, {"$inc": {key_post_numlike: -1}})
+        post_col.update_one({"_id": postid}, {"$pull": {key_comment_userlike: netid}})
+        user_col.update_one({"_id": netid}, {"$pull": {key_user_likedpostids: postid}})
