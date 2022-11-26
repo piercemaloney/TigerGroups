@@ -107,7 +107,12 @@ def home():
     # get user info
     netid = session["username"]
     print(netid)
+
+    # check if user is logging in for the first time, if yes call insert user
     user_info = get_methods.get_user_info(client, netid)
+    if user_info == None:
+        post_methods.insert_user(client, netid)
+        user_info = get_methods.get_user_info(client, netid)
 
     # get information to display posts
     current_group = get_methods.get_group(client, groupid)
@@ -156,8 +161,6 @@ def get_posts():
         # convert object id to str
         posts[i]["_id"] = str(posts[i]["_id"])
     
-    print(posts)
-    
     return render_template("posts.html", posts=posts, strings=strings, key_post_date_created = "date_created")
 
 
@@ -195,10 +198,11 @@ def new_post():
 
 @app.route("/new_group")
 def new_group():
+    print("hi")
     # get the values
     group_name, description, color = "", "", ""
-    if request.args.get("group_name") is not None:
-        group_name = request.args.get("group_name")
+    if request.args.get("title") is not None:
+        group_name = request.args.get("title")
     if request.args.get("description") is not None:
         description = request.args.get("description")
     if request.args.get("color") is not None:
@@ -210,6 +214,7 @@ def new_group():
     if group_name == "" or description == "" or color == "":
         return redirect(url_for("login"))
 
+    print("asdf")
     post_methods.insert_group(
         client, session["username"], group_name, description, color
     )
