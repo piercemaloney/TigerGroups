@@ -15,7 +15,7 @@
   <body>
     <div class="container-fluid"> {% include "header.html" %} </div>
 
-    <!-- Secondary Header (Groups, Content Information) -->
+    <!-- Secondary Header (Groups, Content, Information) -->
     <div class="container-fluid">
       <div class="row">
 
@@ -52,7 +52,7 @@
                     <textarea class="form-control" name="description" rows="3"></textarea>
                   </div>
                   <label>Color</label>
-                  <div id="colorSelect">
+                  <div>
                     
                     <input type="radio" class="btn-check" name="color" id="option1" value="bg-light text-dark" autocomplete="off" checked>
                     <label class="btn btn-outline" for="option1">White</label>
@@ -164,7 +164,7 @@
               <div class="modal-body">
                 <form action="/add_user" onsubmit="$('#group_id_user').val(state.current_group_id);" method="get">
                   <div>
-                    <label class="form-label">netid</label>
+                    <label class="form-label">netid:</label>
                     <input type="text" name="new_user" class="form-control" />
                   </div>
                   <input type="hidden" name="group_id" value="" id="group_id_user" />
@@ -181,7 +181,7 @@
       </div>
     </div>
 
-    <!-- Group -->
+    <!-- Groups -->
     <div class="container-fluid">
       <div class="row">
         <div class="list-group col-3 no-float">
@@ -193,7 +193,7 @@
               onclick='getPosts("{{group['_id']}}");  state.current_group_id = "{{group['_id']}}";'
               data-toggle="list"
               role="tab"
-              >{{group[strings.key_group_name]}}</a
+              ><h5 class="mb-2 mt-2">{{group[strings.key_group_name]}}</h5></a
             >
             {% endfor %}
           </div>

@@ -30,9 +30,12 @@
 </li>
 {% endfor %}
 </div>
-<div class="list-group col-4">
+<div class="list-group list-group-flush col-4">
   {% for user in users: %}
-  <a class="list-group-item">{{user}}</a>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    {{user}}
+    <button type="button" class="btn-close align-middle" aria-label="Close"></button>
+  </li>
   {% endfor %}
   </div>
 </div>
