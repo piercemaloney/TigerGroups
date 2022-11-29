@@ -53,8 +53,10 @@ function new_post_submit() {
 
 let state = { current_group_id: "636344bcd77f507de97e277e" };
 
+//-------------------------
 function getPosts(id) {
   let url = "/get_posts?groupid=" + id;
+  document.cookie = "groupid=" + id;
 
   if (request != null) request.abort();
   request = $.ajax({
@@ -62,8 +64,6 @@ function getPosts(id) {
     url: url,
     success: handleResponse,
   });
-
-  console.log("Get posts with groupid: " + id);
 }
 
 function handle_like_response(data, post_id) {
@@ -85,8 +85,16 @@ function likePost(post_id) {
   });
 }
 
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+}
+
 function setup() {
-  getPosts("636344bcd77f507de97e277e"); // default post
+  let id = getCookie("groupid");
+  $("" + id).css("color", "red");
+  getPosts(id); // default post
 }
 
 $("document").ready(setup);

@@ -1,4 +1,4 @@
-from flask import Flask, request, session, redirect, url_for, render_template
+from flask import Flask, request, session, redirect, url_for, render_template, make_response
 from cas import CASClient
 import database.get_methods as get_methods
 import database.post_methods as post_methods
@@ -8,22 +8,15 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import datetime
 
+#-----------------------------------------------------------------------
+# Setup
 
 app = Flask(__name__)
 app.secret_key = "V7nlCN90LPHOTA9PGGyf"  # placeholder
 app.config["ENV"] = "development"
 app.config["DEBUG"] = True
-
-cas_client = CASClient(
-    version=3,
-    service_url="http://localhost:5000/login?next=%2Fhome",
-    server_url="https://fed.princeton.edu/cas/",
-)
-
-
 client = MongoClient(strings.uri)
 SUCCESS = "200 OK"
-
 
 def is_user_in_group(user_group_id):
     # check if user is authorized
@@ -36,11 +29,18 @@ def is_user_in_group(user_group_id):
             flag = True
     return flag
 
+#-----------------------------------------------------------------------
+# Login Functions
+
+cas_client = CASClient(
+    version=3,
+    service_url="http://localhost:5000/login?next=%2Fset_default_cookie",
+    server_url="https://fed.princeton.edu/cas/",
+)
 
 @app.route("/")
 def index():
     return login()
-
 
 @app.route("/login")
 def login():
@@ -76,7 +76,6 @@ def login():
         session["username"] = user
         return redirect(next)
 
-
 @app.route("/logout")
 def logout():
     redirect_url = url_for("logout_callback", _external=True)
@@ -85,13 +84,11 @@ def logout():
 
     return redirect(cas_logout_url)
 
-
 @app.route("/logout_callback")
 def logout_callback():
     # redirect from CAS logout request after CAS logout successfully
     session.pop("username", None)
     return 'Logged out from CAS. <a href="/login">Login</a>'
-
 
 @app.route("/profile")
 def profile(method=["GET"]):
@@ -99,30 +96,42 @@ def profile(method=["GET"]):
         return 'Logged in as %s. <a href="/logout">Logout</a>' % session["username"]
     return 'Login required. <a href="/login">Login</a>', 403
 
+@app.route("/set_default_cookie")
+def set_default_cookie():
+    response = make_response(redirect('/home'))
+    response.set_cookie('groupid', '638585e9048ae719be1cba4c')
+    return response
+
+@app.route("/permission_denied")
+def permission_denied():
+    return redirect(url_for("login"))
+
+#-----------------------------------------------------------------------
 
 @app.route("/home")
 def home():
     # get groupid
-    groupid = ObjectId("636344bcd77f507de97e277e")
-
+    groupid = ObjectId(request.cookies.get('groupid'))
+    print(groupid)
     # get user info
     netid = session["username"]
-    print(netid)
 
     # check if user is logging in for the first time, if yes call insert user
     user_info = get_methods.get_user_info(client, netid)
     if user_info == None:
         post_methods.insert_user(client, netid)
         user_info = get_methods.get_user_info(client, netid)
+        moderator_methods.add_user_to_group(client, groupid, netid)
 
     # get information to display posts
-    current_group = get_methods.get_group(client, groupid)
     groups = get_methods.get_groups(client, user_info[strings.key_user_groupids])
-    posts = get_methods.get_posts(client, current_group[strings.key_group_postids])
+    print(groups)
 
     return render_template(
-        "home.html", posts=posts, groups=groups, groupid=groupid, strings=strings
+        "home.html", groups=groups, strings=strings
     )
+
+#-----------------------------------------------------------------------
 
 @app.route("/get_posts")
 def get_posts():
@@ -164,11 +173,7 @@ def get_posts():
     
     return render_template("posts.html", posts=posts, users=users, strings=strings, key_post_date_created = "date_created")
 
-
-@app.route("/permission_denied")
-def permission_denied():
-    return redirect(url_for("login"))
-
+#-----------------------------------------------------------------------
 
 @app.route("/new_post")
 def new_post():
@@ -197,6 +202,8 @@ def new_post():
     )
     return redirect(url_for("login"))
 
+#-----------------------------------------------------------------------
+
 @app.route("/new_group")
 def new_group():
     print("hi")
@@ -216,11 +223,12 @@ def new_group():
     if group_name == "" or description == "":
         return redirect(url_for("login"))
 
-    print("asdf")
     post_methods.insert_group(
         client, session["username"], group_name, description, color
     )
     return redirect(url_for("login"))
+
+#-----------------------------------------------------------------------
 
 @app.route("/add_user")
 def add_user():
@@ -238,12 +246,17 @@ def add_user():
     if user_info == None:
         return redirect(url_for("login"))
 
+    # if user in group already return
+    if is_user_in_group(group_id):
+        return redirect(url_for("login"))
+
     # otherwise add user to group
     moderator_methods.add_user_to_group(client, ObjectId(group_id), new_user)
     print(new_user)
     print(group_id)
     return redirect(url_for("login"))
 
+#-----------------------------------------------------------------------
 
 @app.route("/get_comments", methods=["GET"])
 def get_comments():
@@ -272,6 +285,7 @@ def get_comments():
         "comments.html", comments=comments, strings=strings, post_id=post_id
     )
 
+#-----------------------------------------------------------------------
 
 @app.route("/new_comment", methods=["POST"])
 def new_comment():
@@ -283,6 +297,8 @@ def new_comment():
     post_methods.insert_comment(client, user_id, ObjectId(post_id), content)
 
     return SUCCESS
+
+#-----------------------------------------------------------------------
 
 @app.route("/like_post", methods=["POST"])
 def like_post():

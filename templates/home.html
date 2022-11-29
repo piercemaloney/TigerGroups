@@ -14,7 +14,7 @@
   </head>
   <body>
     <div class="container-fluid"> {% include "header.html" %} </div>
-
+    <div  class="p-md-3">
     <!-- Secondary Header (Groups, Content, Information) -->
     <div class="container-fluid">
       <div class="row">
@@ -185,7 +185,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="list-group col-3 no-float">
-          <div class="list-group" id="list-tab" role="tablist">
+          <ul class="list-group" id="list-tab" role="tablist">
             {% for group in groups: %}
             <a
               class="list-group-item list-group-item-action {{group[strings.key_group_color]}}"
@@ -196,12 +196,13 @@
               ><h5 class="mb-2 mt-2">{{group[strings.key_group_name]}}</h5></a
             >
             {% endfor %}
-          </div>
+          </ul>
         </div>
 
         <div class="list-group col" id="posts_view"></div>
       </div>
     </div>
+  </div>
 
     {% block javascript %}
     <script src="{{ url_for('static',filename='home.js') }}"></script>
