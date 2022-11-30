@@ -29,6 +29,47 @@ function new_comment(post_id) {
   });
 }
 
+function delete_post(post_id) {
+  console.log("delete_post for post id: " + post_id);
+  let url = "/delete_post";
+
+  if (request != null) request.abort();
+
+  request = $.ajax({
+    type: "POST",
+    data: {
+      post_id: post_id,
+      group_id: getCookie("groupid"),
+    },
+    url: url,
+    success: function () {
+      $(posts_view).val("");
+      getPosts(getCookie("groupid"));
+    },
+  });
+}
+
+function delete_comment(comment__id, post_id) {
+  console.log("delete_comment for comment id: " + comment__id);
+  let url = "/delete_comment";
+
+  if (request != null) request.abort();
+
+  request = $.ajax({
+    type: "POST",
+    data: {
+      post_id: post_id,
+      comment_id:comment__id,
+      group_id: getCookie("groupid"),
+    },
+    url: url,
+    success: function () {
+      $(comment__id).val("");
+      get_comments(post_id);
+    },
+  });
+}
+
 function handle_get_comments_response(data, post_id) {
   console.log("got reponse post_id= " + post_id);
   $("#" + post_id).html(data);
@@ -55,6 +96,7 @@ let state = { current_group_id: "636344bcd77f507de97e277e" };
 
 //-------------------------
 function getPosts(id) {
+  console.log("get posts with group_id:"+id)
   let url = "/get_posts?groupid=" + id;
   document.cookie = "groupid=" + id;
 

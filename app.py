@@ -1,4 +1,12 @@
-from flask import Flask, request, session, redirect, url_for, render_template, make_response
+from flask import (
+    Flask,
+    request,
+    session,
+    redirect,
+    url_for,
+    render_template,
+    make_response,
+)
 from cas import CASClient
 import database.get_methods as get_methods
 import database.post_methods as post_methods
@@ -7,8 +15,9 @@ import database.strings as strings
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import datetime
+import helper
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Setup
 
 app = Flask(__name__)
@@ -18,18 +27,7 @@ app.config["DEBUG"] = True
 client = MongoClient(strings.uri)
 SUCCESS = "200 OK"
 
-def is_user_in_group(user_group_id):
-    # check if user is authorized
-    user_group_ids = get_methods.get_user_info(client, session["username"])[
-        strings.key_user_groupids
-    ]
-    flag = False
-    for group_id in user_group_ids:
-        if group_id == ObjectId(user_group_id):
-            flag = True
-    return flag
-
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Login Functions
 
 cas_client = CASClient(
@@ -38,9 +36,11 @@ cas_client = CASClient(
     server_url="https://fed.princeton.edu/cas/",
 )
 
+
 @app.route("/")
 def index():
     return login()
+
 
 @app.route("/login")
 def login():
@@ -76,6 +76,7 @@ def login():
         session["username"] = user
         return redirect(next)
 
+
 @app.route("/logout")
 def logout():
     redirect_url = url_for("logout_callback", _external=True)
@@ -84,11 +85,13 @@ def logout():
 
     return redirect(cas_logout_url)
 
+
 @app.route("/logout_callback")
 def logout_callback():
     # redirect from CAS logout request after CAS logout successfully
     session.pop("username", None)
     return 'Logged out from CAS. <a href="/login">Login</a>'
+
 
 @app.route("/profile")
 def profile(method=["GET"]):
@@ -96,22 +99,26 @@ def profile(method=["GET"]):
         return 'Logged in as %s. <a href="/logout">Logout</a>' % session["username"]
     return 'Login required. <a href="/login">Login</a>', 403
 
+
 @app.route("/set_default_cookie")
 def set_default_cookie():
-    response = make_response(redirect('/home'))
-    response.set_cookie('groupid', '638585e9048ae719be1cba4c')
+    response = make_response(redirect("/home"))
+    response.set_cookie("groupid", "638585e9048ae719be1cba4c")
     return response
+
 
 @app.route("/permission_denied")
 def permission_denied():
     return redirect(url_for("login"))
 
-#-----------------------------------------------------------------------
+
+# -----------------------------------------------------------------------
+
 
 @app.route("/home")
 def home():
     # get groupid
-    groupid = ObjectId(request.cookies.get('groupid'))
+    groupid = ObjectId(request.cookies.get("groupid"))
     print(groupid)
     # get user info
     netid = session["username"]
@@ -124,14 +131,21 @@ def home():
         moderator_methods.add_user_to_group(client, groupid, netid)
 
     # get information to display posts
-    groups = get_methods.get_groups(client, user_info[strings.key_user_groupids])
-    print(groups)
+    current_group = get_methods.get_group(client, groupid)
+    groups = []
+    posts = []
+    if current_group is not None:
+        groups = get_methods.get_groups(client, user_info[strings.key_user_groupids])
+        if groups is not None:
+            posts = get_methods.get_posts(
+                client, current_group[strings.key_group_postids]
+            )
 
-    return render_template(
-        "home.html", groups=groups, strings=strings
-    )
+    return render_template("home.html", groups=groups, strings=strings)
 
-#-----------------------------------------------------------------------
+
+# -----------------------------------------------------------------------
+
 
 @app.route("/get_posts")
 def get_posts():
@@ -141,7 +155,7 @@ def get_posts():
         request_group_id = request.args.get("groupid")
 
     # check if user is authorized
-    is_user_valid = is_user_in_group(request_group_id)
+    is_user_valid = helper.is_user_in_group(request_group_id)
     if is_user_valid is False:
         return redirect(url_for("permission_denied"))
 
@@ -155,36 +169,47 @@ def get_posts():
         # create date generation time field (date post was created)
         def utc_to_local(utc_dt):
             return utc_dt.replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
+
         today = datetime.datetime.now()
-        created = utc_to_local(posts[i]["_id"].generation_time).replace(tzinfo=None) 
+        created = utc_to_local(posts[i]["_id"].generation_time).replace(tzinfo=None)
 
         time_delta = (today - created).total_seconds()
         if time_delta < 60:
             posts[i]["date_created"] = str(round(time_delta)) + " seconds ago"
         elif time_delta < 3600:
-            posts[i]["date_created"] = str(round(time_delta/60)) + " minutes ago"
+            posts[i]["date_created"] = str(round(time_delta / 60)) + " minutes ago"
         elif time_delta < 86400:
-            posts[i]["date_created"] = str(round(time_delta/3600)) + " hours ago"
+            posts[i]["date_created"] = str(round(time_delta / 3600)) + " hours ago"
         else:
-            posts[i]["date_created"] = created.strftime('%B %d')
+            posts[i]["date_created"] = created.strftime("%B %d")
 
         # convert object id to str
         posts[i]["_id"] = str(posts[i]["_id"])
-    
-    return render_template("posts.html", posts=posts, users=users, strings=strings, key_post_date_created = "date_created")
 
-#-----------------------------------------------------------------------
+    # check if user is moderator of group
+    user_id = session["username"]
+    is_moderator = helper.is_user_moderator(user_id, request_group_id)
+    return render_template(
+        "posts.html",
+        posts=posts,
+        users=users,
+        strings=strings,
+        key_post_date_created="date_created",
+        is_moderator=is_moderator,
+    )
 
-@app.route("/new_post")
+
+# -----------------------------------------------------------------------
+
+
+@app.route("/new_post", methods=["POST"])
 def new_post():
     # get the values
-    title, body, group_id = "", "", ""
-    if request.args.get("title") is not None:
-        title = request.args.get("title")
-    if request.args.get("body") is not None:
-        body = request.args.get("body")
-    if request.args.get("group_id") is not None:
-        group_id = request.args.get("group_id")
+    title, body, group_id = (
+        request.form.get("title"),
+        request.form.get("body"),
+        request.form.get("group_id"),
+    )
 
     print("title, body, group_id: ", title, body, group_id)
 
@@ -193,7 +218,7 @@ def new_post():
         return redirect(url_for("login"))
 
     # check if user is authorized
-    is_user_valid = is_user_in_group(group_id)
+    is_user_valid = helper.is_user_in_group(group_id)
     if is_user_valid is False:
         return redirect(url_for("permission_denied"))
 
@@ -202,21 +227,22 @@ def new_post():
     )
     return redirect(url_for("login"))
 
-#-----------------------------------------------------------------------
 
-@app.route("/new_group")
+# -----------------------------------------------------------------------
+
+
+@app.route("/new_group", methods=["POST"])
 def new_group():
     print("hi")
     # get the values
-    group_name, description, color = "", "", ""
-    if request.args.get("title") is not None:
-        group_name = request.args.get("title")
-    if request.args.get("description") is not None:
-        description = request.args.get("description")
-    if request.args.get("color") is not None:
-        color = request.args.get("color")
-    else:
-        # default color is light bg with dark text
+    group_name, description, color = (
+        request.form.get("title"),
+        request.form.get("description"),
+        request.form.get("color"),
+    )
+
+    # default color is light bg with dark text
+    if color == "":
         color = "bg-light text-dark"
 
     # if new group is empty
@@ -228,7 +254,9 @@ def new_group():
     )
     return redirect(url_for("login"))
 
-#-----------------------------------------------------------------------
+
+# -----------------------------------------------------------------------
+
 
 @app.route("/add_user")
 def add_user():
@@ -247,7 +275,7 @@ def add_user():
         return redirect(url_for("login"))
 
     # if user in group already return
-    if is_user_in_group(group_id):
+    if helper.is_user_in_group(group_id):
         return redirect(url_for("login"))
 
     # otherwise add user to group
@@ -256,24 +284,29 @@ def add_user():
     print(group_id)
     return redirect(url_for("login"))
 
-#-----------------------------------------------------------------------
+
+# -----------------------------------------------------------------------
+
 
 @app.route("/get_comments", methods=["GET"])
 def get_comments():
     # get the values
-    post_id, group_id = "", ""
+    post_id, group_id = "", request.cookies["groupid"]
     if request.args.get("post_id") is not None:
         post_id = request.args.get("post_id")
-    print(post_id)
+    user_id = session["username"]
 
     # if post is empty
     if post_id == "":
         return redirect(url_for("login"))
 
-    # check if user is authorized
-    # is_user_valid = is_user_in_group(group_id)
-    # if is_user_valid is False:
-    #    return redirect(url_for("permission_denied"))
+    flag = True
+    # check if user is in group
+    flag = flag and helper.is_user_in_group(group_id)
+    # check if post is in group
+    flag = flag and helper.is_post_in_group(post_id, group_id)
+
+    is_moderator = helper.is_user_moderator(user_id, group_id)
 
     comment_ids = get_methods.get_post(client, ObjectId(post_id))[
         strings.key_post_commentids
@@ -282,10 +315,16 @@ def get_comments():
         comment_ids[i] = ObjectId(comment_ids[i])
     comments = get_methods.get_comments(client, comment_ids)
     return render_template(
-        "comments.html", comments=comments, strings=strings, post_id=post_id
+        "comments.html",
+        comments=comments,
+        strings=strings,
+        post_id=post_id,
+        is_moderator=is_moderator,
     )
 
-#-----------------------------------------------------------------------
+
+# -----------------------------------------------------------------------
+
 
 @app.route("/new_comment", methods=["POST"])
 def new_comment():
@@ -298,7 +337,9 @@ def new_comment():
 
     return SUCCESS
 
-#-----------------------------------------------------------------------
+
+# -----------------------------------------------------------------------
+
 
 @app.route("/like_post", methods=["POST"])
 def like_post():
@@ -309,6 +350,50 @@ def like_post():
     post_methods.like_post(client, user_id, ObjectId(post_id))
 
     return SUCCESS
+
+
+@app.route("/delete_post", methods=["POST"])
+def delete_post():
+    post_id = request.form.get("post_id")
+    group_id = request.form.get("group_id")
+    user_id = session["username"]
+    print(post_id, ", ", group_id)
+
+    # verify user is moderator of group
+    flag = helper.is_user_moderator(user_id, group_id)
+
+    # verify post belongs in group
+    flag = helper.is_post_in_group(post_id, group_id) and flag
+
+    if flag is True:
+        moderator_methods.delete_post(client, ObjectId(post_id), ObjectId(group_id))
+        return SUCCESS
+    return
+
+
+@app.route("/delete_comment", methods=["POST"])
+def delete_comment():
+    comment_id = request.form.get("comment_id")
+    group_id = request.form.get("group_id")
+    user_id = session["username"]
+    post_id = request.form.get("post_id")
+
+    flag = True
+    # verify comment is in post
+    flag = flag and helper.is_comment_in_post(comment_id, post_id)
+    # verify post is in group
+    flag = flag and helper.is_post_in_group(post_id, group_id)
+    # verify user is moderator in group
+    flag = flag and helper.is_user_moderator(user_id, group_id)
+
+    print(flag)
+    if flag is True:
+        print(comment_id, post_id)
+        moderator_methods.delete_comment(
+            client, ObjectId(comment_id), ObjectId(post_id)
+        )
+    return SUCCESS
+
 
 if __name__ == "__main__":
     app.run(debug=True)

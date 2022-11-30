@@ -42,7 +42,7 @@
                   data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body">
-                <form action="/new_group">
+                <form action="/new_group" method="POST">
                   <div>
                     <label class="form-label">Group Name</label>
                     <input type="text" name="title" class="form-control" />
@@ -128,7 +128,7 @@
                   data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body">
-                <form action="/new_post" onsubmit="$('#group_id_param').val(state.current_group_id);" method="get">
+                <form action="/new_post" onsubmit="$('#group_id_param').val(getCookie('groupid'));" method="POST">
                   <div>
                     <label class="form-label">Title</label>
                     <input type="text" name="title" class="form-control" />

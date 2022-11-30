@@ -3,18 +3,18 @@
 {% for post in posts: %}
 <li class="list-group-item flex-column align-items-start">
   <div class="d-flex w-100 justify-content-between">
-    <div><h5 class="mb-1">{{post[strings.key_post_title]}}</h5></div>
+    <div class="col-10"><h5 class="mb-1">{{post[strings.key_post_title]}}</h5></div>
     <div>
       <small>{{post[key_post_date_created]}}</small>
-      <!-- { if moderator } -->
-      <button type="button" class="btn-close align-middle" aria-label="Close"></button>
-      <!-- { endif } -->
+      {% if is_moderator is true %}
+      <button type="button" class="btn-close align-middle" aria-label="Close" onclick="delete_post({{'"'}}{{post['_id']}}{{'"'}})"></button>
+      {% endif %}
     </div>
   </div>
   <p class="mb-1">{{post[strings.key_post_body]}}</p>
   <div class="d-flex w-100 justify-content-between">
     <div>
-      <button type="button" class="btn btn-outline-dark btn-sm" onclick="like_post({{'"'}}{{post[strings.key_post_id]}}{{'"'}})">
+      <button type="button" class="btn btn-outline-dark btn-sm" onclick="like_post({{'"'}}{{post['_id']}}{{'"'}})">
         ♥ Like
       </button>
       <button
