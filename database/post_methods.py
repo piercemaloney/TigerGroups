@@ -137,10 +137,10 @@ def like_post(client, netid, postid):
     # get collection
     db = client[database_name]
     user_col = db[user_collection_title]
-    post_col = db[comment_collection_title]
+    post_col = db[post_collection_title]
     post = post_col.find_one({"_id": postid})
     # only update the db if the user has NOT already liked the post
-    if netid not in post["key_post_userlike"]:
+    if netid not in post[key_post_userlike]:
         # update numlike in comment collection and likedpostids in user collection
         post_col.update_one({"_id": postid}, {"$inc": {key_post_numlike: 1}})
         post_col.update_one({"_id": postid}, {"$push": {key_comment_userlike: netid}})
