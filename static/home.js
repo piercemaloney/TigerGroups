@@ -70,6 +70,26 @@ function delete_comment(comment__id, post_id) {
   });
 }
 
+function remove_user_from_group(netid) {
+  console.log("remove user from group: " + netid);
+  let url = "/remove_user";
+
+  if (request != null) request.abort();
+
+  request = $.ajax({
+    type: "POST",
+    data: {
+      netid: netid,
+      group_id: getCookie("groupid"),
+    },
+    url: url,
+    success: function () {
+      // $(posts_view).val("");
+      // getPosts(getCookie("groupid"));
+    },
+  });
+}
+
 function handle_get_comments_response(data, post_id) {
   console.log("got reponse post_id= " + post_id);
   $("#" + post_id).html(data);

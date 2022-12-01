@@ -111,7 +111,7 @@ def add_user_to_group(client, groupid, netid):
 
     # update group table and user table
     group_col.update_one({'_id': groupid}, {'$push': {key_group_netids: netid}})
-    print("sucess")
+    print(f"sucess: id: {groupid}, netid: {netid}")
     user_col.update_one({'_id': netid}, {'$push': {key_user_groupids: groupid}})
 
 #-----------------------------------------------------------------------
@@ -126,3 +126,5 @@ def remove_user_from_group(client, groupid, netid):
     # update group table and user table
     group_col.update_one({'_id': groupid}, {'$pull': {key_group_netids: netid}})
     user_col.update_one({'_id': netid}, {'$pull': {key_user_groupids: groupid}})
+
+    # atm, not pulling posts, likes, or comments from removed user

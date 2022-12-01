@@ -3,7 +3,7 @@
 {% for post in posts: %}
 <li class="list-group-item flex-column align-items-start">
   <div class="d-flex w-100 justify-content-between">
-    <div class="col-10"><h5 class="mb-1">{{post[strings.key_post_title]}}</h5></div>
+    <div><h5 class="mb-1">{{post[strings.key_post_title]}}</h5></div>
     <div>
       <small>{{post[key_post_date_created]}}</small>
       {% if is_moderator is true %}
@@ -34,7 +34,7 @@
   {% for user in users: %}
   <li class="list-group-item d-flex justify-content-between align-items-center">
     {{user}}
-    <button type="button" class="btn-close align-middle" aria-label="Close"></button>
+    <button type="button" class="btn-close align-middle" aria-label="Close" onclick="remove_user_from_group({{'"'}}{{user}}{{'"'}})"></button>
   </li>
   {% endfor %}
   </div>

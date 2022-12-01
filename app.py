@@ -27,6 +27,8 @@ app.config["DEBUG"] = True
 client = MongoClient(strings.uri)
 SUCCESS = "200 OK"
 
+PRINCETON_GROUP_ID = "638585e9048ae719be1cba4c"
+
 # -----------------------------------------------------------------------
 # Login Functions
 
@@ -103,7 +105,7 @@ def profile(method=["GET"]):
 @app.route("/set_default_cookie")
 def set_default_cookie():
     response = make_response(redirect("/home"))
-    response.set_cookie("groupid", "638585e9048ae719be1cba4c")
+    response.set_cookie("groupid", PRINCETON_GROUP_ID)
     return response
 
 
@@ -136,6 +138,8 @@ def home():
     posts = []
     if current_group is not None:
         groups = get_methods.get_groups(client, user_info[strings.key_user_groupids])
+        if groups is None:
+            groups = [PRINCETON_GROUP_ID]
         if groups is not None:
             posts = get_methods.get_posts(
                 client, current_group[strings.key_group_postids]
@@ -163,6 +167,7 @@ def get_posts():
     current_group = get_methods.get_group(client, ObjectId(request_group_id))
     posts = get_methods.get_posts(client, current_group[strings.key_group_postids])
     users = current_group[strings.key_group_netids]
+    print("USERS:", users)
 
     for i in range(len(posts)):
 
@@ -272,10 +277,13 @@ def add_user():
     # if user doesn't exist return
     user_info = get_methods.get_user_info(client, new_user)
     if user_info == None:
+        print("no user_info")
         return redirect(url_for("login"))
 
+    print(user_info)
     # if user in group already return
     if helper.is_user_in_group(group_id):
+        print("is in group")
         return redirect(url_for("login"))
 
     # otherwise add user to group
@@ -283,6 +291,7 @@ def add_user():
     print(new_user)
     print(group_id)
     return redirect(url_for("login"))
+
 
 
 # -----------------------------------------------------------------------
@@ -393,6 +402,24 @@ def delete_comment():
             client, ObjectId(comment_id), ObjectId(post_id)
         )
     return SUCCESS
+
+
+@app.route("/remove_user", methods=["POST"])
+def remove_user():
+    group_id = request.form.get("group_id")
+    netid = request.form.get("netid") # target
+    user_id = session["username"]
+
+    flag = True
+    # verify user is moderator in group
+    flag = flag and helper.is_user_moderator(user_id, group_id)
+    if flag:
+        print(group_id, netid)
+        moderator_methods.remove_user_from_group(
+            client, ObjectId(group_id), netid
+        )
+    return SUCCESS
+
 
 
 if __name__ == "__main__":
