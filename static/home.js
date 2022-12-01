@@ -112,7 +112,7 @@ function new_post_submit() {
   console.log("submitting new post for group_id: " + state.current_group_id);
 }
 
-let state = { current_group_id: "636344bcd77f507de97e277e" };
+let state = { current_group_id: "638585e9048ae719be1cba4c" };
 
 //-------------------------
 function getPosts(id) {
