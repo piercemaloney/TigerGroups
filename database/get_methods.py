@@ -20,7 +20,7 @@ def get_comment(client, commentid):
 def get_comments(client, commentids):
     db = client[database_name]
     comment_table = db[comment_collection_title]
-    comment_list = list(comment_table.find({'_id': {'$in': commentids}}.sort('_id', -1)))
+    comment_list = list(comment_table.find({'_id': {'$in': commentids}}))
     return comment_list
 
 #-----------------------------------------------------------------------
