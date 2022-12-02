@@ -3,13 +3,38 @@
 {% for post in posts: %}
 <li class="list-group-item flex-column align-items-start">
   <div class="d-flex w-100 justify-content-between">
+
     <div><h5 class="mb-1">{{post[strings.key_post_title]}}</h5></div>
     <div>
       <small>{{post[key_post_date_created]}}</small>
       {% if is_moderator is true %}
-      <button type="button" class="btn-close align-middle" aria-label="Close" onclick="delete_post({{'"'}}{{post['_id']}}{{'"'}})"></button>
+      <button type="button" class="btn-close align-middle" data-bs-toggle="modal"
+      data-bs-target="#DelPost" aria-label="Close"></button>
       {% endif %}
     </div>
+
+    <!--Delete  Confirmation-->
+    <div class="modal" id="DelPost">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Are you sure you want do delete this post?</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+              <div align="center" class="clearfix">
+                <button type="button" data-bs-dismiss="modal" class="cancelbtn">Cancel</button>
+                <button type="button" data-bs-dismiss="modal" class="deletebtn" onclick="delete_post({{'"'}}{{post['_id']}}{{'"'}})";" >Delete</button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
   <p class="mb-1">{{post[strings.key_post_body]}}</p>
   <div class="d-flex w-100 justify-content-between">
@@ -30,7 +55,7 @@
 </li>
 {% endfor %}
 </div>
-<div class="list-group list-group-flush col-4">
+<div id="members_list" class="list-group list-group-flush col-4">
   {% for user in users: %}
   <li class="list-group-item d-flex justify-content-between align-items-center">
     {{user}}

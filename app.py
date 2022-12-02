@@ -135,17 +135,11 @@ def home():
     # get information to display posts
     current_group = get_methods.get_group(client, groupid)
     groups = []
-    posts = []
     if current_group is not None:
         groups = get_methods.get_groups(client, user_info[strings.key_user_groupids])
         if groups is None:
             groups = [PRINCETON_GROUP_ID]
-        if groups is not None:
-            posts = get_methods.get_posts(
-                client, current_group[strings.key_group_postids]
-            )
-
-    return render_template("home.html", groups=groups, strings=strings)
+    return render_template("home.html", groups=groups, netid=netid, strings=strings)
 
 
 # -----------------------------------------------------------------------
@@ -265,7 +259,7 @@ def new_group():
 
 @app.route("/add_user")
 def add_user():
-    print("hi")
+    print("asdfsdf")
     # get the values
     new_user = ""
     if request.args.get("new_user") is not None:
@@ -280,9 +274,8 @@ def add_user():
         print("no user_info")
         return redirect(url_for("login"))
 
-    print(user_info)
     # if user in group already return
-    if helper.is_user_in_group(group_id):
+    if helper.is_new_user_in_group(group_id, new_user):
         print("is in group")
         return redirect(url_for("login"))
 
@@ -292,7 +285,23 @@ def add_user():
     print(group_id)
     return redirect(url_for("login"))
 
+# -----------------------------------------------------------------------
 
+@app.route("/remove_user", methods=["POST"])
+def remove_user():
+    group_id = request.form.get("group_id")
+    netid = request.form.get("netid") # target
+    user_id = session["username"]
+
+    flag = True
+    # verify user is moderator in group
+    flag = flag and helper.is_user_moderator(user_id, group_id)
+    if flag:
+        print(group_id, netid)
+        moderator_methods.remove_user_from_group(
+            client, ObjectId(group_id), netid
+        )
+    return SUCCESS
 
 # -----------------------------------------------------------------------
 
@@ -360,9 +369,12 @@ def like_post():
 
     return SUCCESS
 
+# -----------------------------------------------------------------------
 
 @app.route("/delete_post", methods=["POST"])
 def delete_post():
+    print("asdfsdfsdfdsfds")
+
     post_id = request.form.get("post_id")
     group_id = request.form.get("group_id")
     user_id = session["username"]
@@ -379,6 +391,7 @@ def delete_post():
         return SUCCESS
     return
 
+# -----------------------------------------------------------------------
 
 @app.route("/delete_comment", methods=["POST"])
 def delete_comment():
@@ -403,24 +416,9 @@ def delete_comment():
         )
     return SUCCESS
 
-
-@app.route("/remove_user", methods=["POST"])
-def remove_user():
-    group_id = request.form.get("group_id")
-    netid = request.form.get("netid") # target
-    user_id = session["username"]
-
-    flag = True
-    # verify user is moderator in group
-    flag = flag and helper.is_user_moderator(user_id, group_id)
-    if flag:
-        print(group_id, netid)
-        moderator_methods.remove_user_from_group(
-            client, ObjectId(group_id), netid
-        )
-    return SUCCESS
-
-
+# -----------------------------------------------------------------------
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+

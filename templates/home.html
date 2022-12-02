@@ -4,205 +4,328 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TigerGroups</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
-      crossorigin="anonymous" />
+      crossorigin="anonymous"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   </head>
   <body>
-    <div class="container-fluid"> {% include "header.html" %} </div>
-    <div  class="p-md-3">
-    <!-- Secondary Header (Groups, Content, Information) -->
-    <div class="container-fluid">
-      <div class="row">
-
-        <!-- New Group Button -->
-        <div class="d-flex col-md-3 no-float align-items-center justify-content-between">
-          <div><h2>Groups</h2></div>
-          <div><button
-            type="button"
-            class="btn btn-primary btn-outline btn-sm"
-            data-bs-toggle="modal"
-            data-bs-target="#NewGroup">
-            + New Group
-          </button></div>
-        </div>
-        <!-- New Group Modal -->
-        <div class="modal" id="NewGroup">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">New Group</h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body">
-                <form action="/new_group" method="POST">
-                  <div>
-                    <label class="form-label">Group Name</label>
-                    <input type="text" name="title" class="form-control" />
-                  </div>
-                  <div>
-                    <label class="form-label">Description</label>
-                    <textarea class="form-control" name="description" rows="3"></textarea>
-                  </div>
-                  <label>Color</label>
-                  <div>
-                    
-                    <input type="radio" class="btn-check" name="color" id="option1" value="bg-light text-dark" autocomplete="off" checked>
-                    <label class="btn btn-outline" for="option1">White</label>
-
-                    <input type="radio" class="btn-check" name="color" id="option2" value="bg-warning text-dark" autocomplete="off">
-                    <label class="btn btn-outline-warning" for="option2">Orange</label>
-
-                    <input type="radio" class="btn-check" name="color" id="option3" value="bg-primary text-light" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="option3">Blue</label>
-
-                    <input type="radio" class="btn-check" name="color" id="option4" value="bg-success text-light" autocomplete="off">
-                    <label class="btn btn-outline-success" for="option4">Green</label>
-
-                    <input type="radio" class="btn-check" name="color" id="option5" value="bg-danger text-light" autocomplete="off">
-                    <label class="btn btn-outline-danger" for="option5">Red</label>
-
-                    <input type="radio" class="btn-check" name="color" id="option6" value="bg-info text-light" autocomplete="off">
-                    <label class="btn btn-outline-info" for="option6">Cyan</label>
-
-                    <input type="radio" class="btn-check" name="color" id="option7" value="bg-dark text-light" autocomplete="off">
-                    <label class="btn btn-outline-dark" for="option7">Dark</label>
-
-                    <input type="radio" class="btn-check" name="color" id="option8" value="bg-secondary text-light" autocomplete="off">
-                    <label class="btn btn-outline-secondary" for="option8">Grey</label>
-                    
-                  </div>
-                  <br />
-                  <button type="submit" class="btn btn-primary float-end">
-                    Submit
-                  </button>
-                </form>
-              </div>
+    <div class="container-fluid">{% include "header.html" %}</div>
+    <div class="p-md-3">
+      <!-- Secondary Header (Groups, Content, Information) -->
+      <div class="container-fluid">
+        <div class="row">
+          <!-- New Group Button -->
+          <div
+            class="d-flex col-md-3 no-float align-items-center justify-content-between"
+          >
+            <div><h2>Groups</h2></div>
+            <div>
+              <button
+                type="button"
+                class="btn btn-primary btn-outline btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#NewGroup"
+              >
+                + New Group
+              </button>
             </div>
           </div>
-        </div>
-
-        <!-- New Post Button -->
-        <div class="list-group col">
-          <div class="row">
-        <div class="d-flex px-md-3 col-8 no-float align-items-center justify-content-between">
-          <div> <h2>Content</h2></div>
-          <div><button
-            type="button"
-            class="btn btn-primary btn-outline btn-sm"
-            data-bs-toggle="modal"
-            data-bs-target="#NewPost">
-            + New Post
-          </button></div>
-        </div>
-        <!-- Add User Button -->
-        <div class="d-flex col-4 no-float align-items-center justify-content-between">
-          <h2>Information</h2>
-          <div><button
-            type="button"
-            class="btn btn-primary btn-outline btn-sm"
-            data-bs-toggle="modal"
-            data-bs-target="#AddUser">
-            + Add User
-          </button></div>
-          </div>
-        </div>
-      </div>
-
-        <!-- New Post Modal -->
-        <div class="modal" id="NewPost">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">New Post</h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body">
-                <form action="/new_post" onsubmit="$('#group_id_param').val(getCookie('groupid'));" method="POST">
-                  <div>
-                    <label class="form-label">Title</label>
-                    <input type="text" name="title" class="form-control" />
-                  </div>
-                  <div>
-                    <label class="form-label">Body</label>
-                    <textarea class="form-control" name="body" rows="8"></textarea>
-                  </div>
-                  <br />
-                  <div>
-                  <input type="hidden" name="group_id" value="" id="group_id_param" />
+          <!-- New Group Modal -->
+          <div class="modal" id="NewGroup">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">New Group</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
                 </div>
-                  <button type="submit" class="btn btn-primary float-end">
-                    Submit
+                <div class="modal-body">
+                  <form action="/new_group" method="POST">
+                    <div>
+                      <label class="form-label">Group Name</label>
+                      <input type="text" name="title" class="form-control" />
+                    </div>
+                    <div>
+                      <label class="form-label">Description</label>
+                      <textarea
+                        class="form-control"
+                        name="description"
+                        rows="3"
+                      ></textarea>
+                    </div>
+                    <label>Color</label>
+                    <div>
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="color"
+                        id="option1"
+                        value="bg-light text-dark"
+                        autocomplete="off"
+                        checked
+                      />
+                      <label class="btn btn-outline" for="option1">White</label>
+
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="color"
+                        id="option2"
+                        value="bg-warning text-dark"
+                        autocomplete="off"
+                      />
+                      <label class="btn btn-outline-warning" for="option2"
+                        >Orange</label
+                      >
+
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="color"
+                        id="option3"
+                        value="bg-primary text-light"
+                        autocomplete="off"
+                      />
+                      <label class="btn btn-outline-primary" for="option3"
+                        >Blue</label
+                      >
+
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="color"
+                        id="option4"
+                        value="bg-success text-light"
+                        autocomplete="off"
+                      />
+                      <label class="btn btn-outline-success" for="option4"
+                        >Green</label
+                      >
+
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="color"
+                        id="option5"
+                        value="bg-danger text-light"
+                        autocomplete="off"
+                      />
+                      <label class="btn btn-outline-danger" for="option5"
+                        >Red</label
+                      >
+
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="color"
+                        id="option6"
+                        value="bg-info text-light"
+                        autocomplete="off"
+                      />
+                      <label class="btn btn-outline-info" for="option6"
+                        >Cyan</label
+                      >
+
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="color"
+                        id="option7"
+                        value="bg-dark text-light"
+                        autocomplete="off"
+                      />
+                      <label class="btn btn-outline-dark" for="option7"
+                        >Dark</label
+                      >
+
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="color"
+                        id="option8"
+                        value="bg-secondary text-light"
+                        autocomplete="off"
+                      />
+                      <label class="btn btn-outline-secondary" for="option8"
+                        >Grey</label
+                      >
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-primary float-end">
+                      Submit
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- New Post Button -->
+          <div class="list-group col">
+            <div class="row">
+              <div
+                class="d-flex px-md-3 col-8 no-float align-items-center justify-content-between"
+              >
+                <div><h2>Content</h2></div>
+                <div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-outline btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#NewPost"
+                  >
+                    + New Post
                   </button>
-                </form>
+                </div>
+              </div>
+              <!-- Add User Button -->
+              <div
+                class="d-flex col-4 no-float align-items-center justify-content-between"
+              >
+                <h2>Information</h2>
+                <div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-outline btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#AddUser"
+                  >
+                    + Add User
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- New Post Modal -->
+          <div class="modal" id="NewPost">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">New Post</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <form
+                    action="/new_post"
+                    onsubmit="$('#group_id_param').val(getCookie('groupid'));"
+                    method="POST"
+                  >
+                    <div>
+                      <label class="form-label">Title</label>
+                      <input type="text" name="title" class="form-control" />
+                    </div>
+                    <div>
+                      <label class="form-label">Body</label>
+                      <textarea
+                        class="form-control"
+                        name="body"
+                        rows="8"
+                      ></textarea>
+                    </div>
+                    <br />
+                    <div>
+                      <input
+                        type="hidden"
+                        name="group_id"
+                        value=""
+                        id="group_id_param"
+                      />
+                    </div>
+                    <button type="submit" class="btn btn-primary float-end">
+                      Submit
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add User Modal -->
+          <div class="modal" id="AddUser">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add User</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <form
+                    action="/add_user"
+                    onsubmit="$('#group_id_user').val(getCookie('groupid'));"
+                    method="get"
+                  >
+                    <div>
+                      <label class="form-label">netid:</label>
+                      <input type="text" name="new_user" class="form-control" />
+                    </div>
+                    <input
+                      type="hidden"
+                      name="group_id"
+                      value=""
+                      id="group_id_user"
+                    />
+                    <br />
+                    <button type="submit" class="btn btn-primary float-end">
+                      Add User
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Add User Modal -->
-        <div class="modal" id="AddUser">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Add User</h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body">
-                <form action="/add_user" onsubmit="$('#group_id_user').val(state.current_group_id);" method="get">
-                  <div>
-                    <label class="form-label">netid:</label>
-                    <input type="text" name="new_user" class="form-control" />
+      <!-- Groups -->
+      <div class="container-fluid">
+        <div class="row">
+          <div class="list-group col-3 no-float">
+            <ul class="list-group" id="list-tab" role="tablist">
+              {% for group in groups: %}
+              <a
+                class="py-2 list-group-item list-group-item-action {{group[strings.key_group_color]}}"
+                id="{{group['_id']}}"
+                onclick="getPosts('{{group["_id"]}}');;"
+                data-toggle="list"
+                role="tab"
+              >
+                <div class="row mb-2 mt-2">
+                  <h5 class="col">{{group[strings.key_group_name]}}</h5>
+                  {% if netid in group[strings.key_group_moderatorids]%}
+                  <div class="col">
+                    <div class="numberCircle float-end">M</div>
                   </div>
-                  <input type="hidden" name="group_id" value="" id="group_id_user" />
-                  <br />
-                  <button type="submit" class="btn btn-primary float-end">
-                    Add User
-                  </button>
-                </form>
-              </div>
-            </div>
+                  {% endif %}
+                </div>
+              </a>
+              {% endfor %}
+            </ul>
           </div>
-        </div>
 
+          <div class="list-group col" id="posts_view"></div>
+        </div>
       </div>
     </div>
-
-    <!-- Groups -->
-    <div class="container-fluid">
-      <div class="row">
-        <div class="list-group col-3 no-float">
-          <ul class="list-group" id="list-tab" role="tablist">
-            {% for group in groups: %}
-            <a
-              class="list-group-item list-group-item-action {{group[strings.key_group_color]}}"
-              id="{{group['_id']}}"
-              onclick='getPosts("{{group['_id']}}");  state.current_group_id = "{{group['_id']}}";'
-              data-toggle="list"
-              role="tab"
-              ><h5 class="mb-2 mt-2">{{group[strings.key_group_name]}}</h5></a
-            >
-            {% endfor %}
-          </ul>
-        </div>
-
-        <div class="list-group col" id="posts_view"></div>
-      </div>
-    </div>
-  </div>
 
     {% block javascript %}
     <script src="{{ url_for('static',filename='home.js') }}"></script>
@@ -211,6 +334,7 @@
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-      crossorigin="anonymous"></script>
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

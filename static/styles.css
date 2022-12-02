@@ -62,3 +62,16 @@ body {
 #bootstrap-overrides {
   background-color: red;
 }
+
+.numberCircle {
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  padding: 9px;
+
+  background: rgb(22, 191, 59);
+  color: rgb(255, 255, 255);
+  text-align: center;
+
+  font: 16px Arial, sans-serif;
+}

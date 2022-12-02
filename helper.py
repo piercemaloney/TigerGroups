@@ -18,10 +18,22 @@ def is_user_in_group(user_group_id):
     ]
     flag = False
     for group_id in user_group_ids:
+        print(group_id)
         if group_id == ObjectId(user_group_id):
             flag = True
     return flag
 
+def is_new_user_in_group(user_group_id, netid):
+    # check if user is authorized
+    user_group_ids = get_methods.get_user_info(client, netid)[
+        strings.key_user_groupids
+    ]
+    flag = False
+    for group_id in user_group_ids:
+        print(group_id)
+        if group_id == ObjectId(user_group_id):
+            flag = True
+    return flag
 
 def is_user_moderator(user_id, group_id):
     moderator_ids = get_methods.get_group(client, ObjectId(group_id))[
