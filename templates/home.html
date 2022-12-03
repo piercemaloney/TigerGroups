@@ -221,36 +221,23 @@
                   ></button>
                 </div>
                 <div class="modal-body">
-                  <form
-                    action="/new_post"
-                    onsubmit="$('#group_id_param').val(getCookie('groupid'));"
-                    method="POST"
-                  >
                     <div>
                       <label class="form-label">Title</label>
-                      <input type="text" name="title" class="form-control" />
+                      <input type="text" name="title" id="post-title" class="form-control" />
                     </div>
                     <div>
                       <label class="form-label">Body</label>
                       <textarea
+                        id="post-body"
                         class="form-control"
                         name="body"
                         rows="8"
                       ></textarea>
                     </div>
-                    <br />
-                    <div>
-                      <input
-                        type="hidden"
-                        name="group_id"
-                        value=""
-                        id="group_id_param"
-                      />
-                    </div>
-                    <button type="submit" class="btn btn-primary float-end">
+                    <div><h6 class="warning">text fields cannot be empty!</h6></div>
+                    <button type="submit" onclick="newPost()" class="btn btn-primary float-end">
                       Submit
                     </button>
-                  </form>
                 </div>
               </div>
             </div>

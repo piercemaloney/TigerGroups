@@ -75,3 +75,8 @@ body {
 
   font: 16px Arial, sans-serif;
 }
+
+.warning {
+  visibility: hidden;
+  color: red;
+}

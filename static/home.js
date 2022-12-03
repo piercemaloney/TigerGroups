@@ -163,6 +163,34 @@ function handle_like_response(data, post_id) {
   console.log("got reponse post_id= " + post_id);
   $("#" + post_id).html(data);
 }
+
+//-------------------------
+
+function newPost() {
+  let title = $("#post-title").val();
+  let body = $("#post-body").val();
+  let url = "/new_post";
+
+  if (body === "" || title === "") {
+    $(".warning").css("visibility", "visible");
+  } else {
+    if (request != null) request.abort();
+    request = $.ajax({
+      type: "POST",
+      data: {
+        title: title,
+        body: body,
+        group_id: getCookie("groupid"),
+      },
+      url: url,
+      success: function () {
+        $("#NewPost").modal("toggle");
+        $(".warning").css("visibility", "hidden");
+        setup();
+      },
+    });
+  }
+}
 //-------------------------
 
 function getCookie(name) {
@@ -173,6 +201,8 @@ function getCookie(name) {
 
 function setup() {
   let id = getCookie("groupid");
+  console.log("id");
+  console.log("yoyoyo");
   getPosts(id); // default post
 }
 

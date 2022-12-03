@@ -121,10 +121,8 @@ def permission_denied():
 def home():
     # get groupid
     groupid = ObjectId(request.cookies.get("groupid"))
-    print(groupid)
     # get user info
     netid = session["username"]
-
     # check if user is logging in for the first time, if yes call insert user
     user_info = get_methods.get_user_info(client, netid)
     if user_info == None:
@@ -139,7 +137,10 @@ def home():
         groups = get_methods.get_groups(client, user_info[strings.key_user_groupids])
         if groups is None:
             groups = [PRINCETON_GROUP_ID]
-    return render_template("home.html", groups=groups, netid=netid, strings=strings)
+    htmlcode = render_template("home.html", groups=groups, netid=netid, strings=strings)
+    home_response = make_response(htmlcode)
+    print(home_response)
+    return htmlcode
 
 
 # -----------------------------------------------------------------------
@@ -148,9 +149,7 @@ def home():
 @app.route("/get_posts")
 def get_posts():
     # get the query
-    request_group_id = "Princeton University"
-    if request.args.get("groupid") is not None:
-        request_group_id = request.args.get("groupid")
+    request_group_id = ObjectId(request.cookies.get("groupid"))
 
     # check if user is authorized
     is_user_valid = helper.is_user_in_group(request_group_id)
@@ -212,10 +211,6 @@ def new_post():
 
     print("title, body, group_id: ", title, body, group_id)
 
-    # if post is empty
-    if title == "" or body == "" or group_id == "":
-        return redirect(url_for("login"))
-
     # check if user is authorized
     is_user_valid = helper.is_user_in_group(group_id)
     if is_user_valid is False:
@@ -224,7 +219,8 @@ def new_post():
     post_methods.insert_post(
         client, session["username"], ObjectId(group_id), title, body
     )
-    return redirect(url_for("login"))
+
+    return redirect(url_for("home"))
 
 
 # -----------------------------------------------------------------------
