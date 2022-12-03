@@ -1,10 +1,8 @@
 "use strict";
 
 let request = null;
-
-function handleResponse(response) {
-  $("#posts_view").html(response);
-}
+let post_id_del = "";
+let user_id_rem = "";
 
 function new_comment(post_id) {
   console.log("new comment for post id: " + post_id);
@@ -29,6 +27,8 @@ function new_comment(post_id) {
   });
 }
 
+//-------------------------
+
 function delete_post(post_id) {
   console.log("delete_post for post id: " + post_id);
   let url = "/delete_post";
@@ -46,6 +46,8 @@ function delete_post(post_id) {
     },
   });
 }
+
+//-------------------------
 
 function delete_comment(comment__id, post_id) {
   console.log("delete_comment for comment id: " + comment__id);
@@ -68,6 +70,8 @@ function delete_comment(comment__id, post_id) {
   });
 }
 
+//-------------------------
+
 function remove_user_from_group(netid) {
   console.log("remove user from group: " + netid);
   let url = "/remove_user";
@@ -88,10 +92,7 @@ function remove_user_from_group(netid) {
   });
 }
 
-function handle_get_comments_response(data, post_id) {
-  console.log("got reponse post_id= " + post_id);
-  $("#" + post_id).html(data);
-}
+//-------------------------
 
 function get_comments(post_id) {
   let url = "/get_comments?post_id=" + post_id;
@@ -106,7 +107,13 @@ function get_comments(post_id) {
   });
 }
 
+function handle_get_comments_response(data, post_id) {
+  console.log("got reponse post_id= " + post_id);
+  $("#" + post_id).html(data);
+}
+
 //-------------------------
+
 function getPosts(id) {
   console.log("get posts with group_id:" + id);
   let url = "/get_posts?groupid=" + id;
@@ -120,10 +127,23 @@ function getPosts(id) {
   });
 }
 
-function handle_like_response(data, post_id) {
-  console.log("got reponse post_id= " + post_id);
-  $("#" + post_id).html(data);
+function handleResponse(response) {
+  $("#posts_view").html(response);
 }
+
+//-------------------------
+
+function setDeleteConfirmationPost(post_id) {
+  console.log(post_id);
+  post_id_del = post_id;
+}
+
+function setRemoveConfirmationUser(user_id) {
+  console.log(user_id);
+  user_id_rem = user_id;
+}
+
+//-------------------------
 
 function likePost(post_id) {
   let url = "/like_post";
@@ -138,6 +158,12 @@ function likePost(post_id) {
     success: handle_like_response,
   });
 }
+
+function handle_like_response(data, post_id) {
+  console.log("got reponse post_id= " + post_id);
+  $("#" + post_id).html(data);
+}
+//-------------------------
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
