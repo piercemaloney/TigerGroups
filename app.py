@@ -184,6 +184,10 @@ def get_posts():
         # convert object id to str
         posts[i]["_id"] = str(posts[i]["_id"])
 
+    is_member_moderator = {}
+    for user in users:
+        is_member_moderator[user] = helper.is_user_moderator(user, request_group_id)
+
     # check if user is moderator of group
     user_id = session["username"]
     is_moderator = helper.is_user_moderator(user_id, request_group_id)
@@ -194,6 +198,7 @@ def get_posts():
         strings=strings,
         key_post_date_created="date_created",
         is_moderator=is_moderator,
+        is_member_moderator=is_member_moderator
     )
 
 
@@ -255,7 +260,6 @@ def new_group():
 
 @app.route("/add_user", methods=["POST"])
 def add_user():
-    print("asdfsdf")
     # get the values
     new_user = request.form.get("new_user")
     group_id = request.form.get("group_id")
