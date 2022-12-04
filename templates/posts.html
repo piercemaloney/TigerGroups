@@ -77,7 +77,10 @@
         </button>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#DelUser" onclick="setRemoveConfirmationUser({{'"'}}{{user}}{{'"'}})">Remove User</a></li>
-          <li> <a class="dropdown-item">Make Moderator</a></li>
+          <li> <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#MakeMod" onclick="setRemoveConfirmationUser({{'"'}}{{user}}{{'"'}})">Make Moderator</a></li>
+          {% if is_member_moderator[user] is true %}
+          <li> <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#MakeNormal" onclick="setRemoveConfirmationUser({{'"'}}{{user}}{{'"'}})">Remove Moderator</a></li>
+          {% endif %}
         </ul>
       </div>
       <!--End Dropdown Button-->
@@ -86,6 +89,7 @@
     </div>
   </li>
   <!-- End Members List -->
+
 
   <!--Delete User Confirmation-->
   <div class="modal" id="DelUser">
@@ -108,6 +112,54 @@
       </div>
     </div>
   </div>
+  <!--End Delete User Confirmation-->
+
+  <!--Make User Moderator-->
+  <div class="modal" id="MakeMod">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Are you sure you want do make this user a moderator?</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal" 
+          ></button>
+        </div>
+        <div class="modal-body">
+            <div class="clearfix">
+              <button type="button" data-bs-dismiss="modal" class="cancelbtn">No</button>
+              <button type="button" data-bs-dismiss="modal" class="deletebtn" onclick="make_user_moderator(user_id_rem)">Yes</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--End Make User Moderator-->
+
+  <!--Make User Moderator-->
+  <div class="modal" id="MakeNormal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Are you sure you want to demote this user?</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal" 
+          ></button>
+        </div>
+        <div class="modal-body">
+            <div class="clearfix">
+              <button type="button" data-bs-dismiss="modal" class="cancelbtn">No</button>
+              <button type="button" data-bs-dismiss="modal" class="deletebtn" onclick="make_user_normal(user_id_rem)">Yes</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--End Make User Moderator-->
+
   {% endfor %}
   </div>
 </div>

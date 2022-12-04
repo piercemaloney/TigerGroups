@@ -77,7 +77,48 @@ function remove_user_from_group(netid) {
   let url = "/remove_user";
 
   if (request != null) request.abort();
+  request = $.ajax({
+    type: "POST",
+    data: {
+      netid: netid,
+      group_id: getCookie("groupid"),
+    },
+    url: url,
+    success: function () {
+      $(posts_view).val("");
+      getPosts(getCookie("groupid"));
+    },
+  });
+}
 
+//-------------------------
+
+function make_user_moderator(netid) {
+  console.log("making user moderator: " + netid);
+  let url = "/make_user_moderator";
+
+  if (request != null) request.abort();
+  request = $.ajax({
+    type: "POST",
+    data: {
+      netid: netid,
+      group_id: getCookie("groupid"),
+    },
+    url: url,
+    success: function () {
+      $(posts_view).val("");
+      getPosts(getCookie("groupid"));
+    },
+  });
+}
+
+//-------------------------
+
+function make_user_normal(netid) {
+  console.log("making user normal: " + netid);
+  let url = "/make_user_normal";
+
+  if (request != null) request.abort();
   request = $.ajax({
     type: "POST",
     data: {

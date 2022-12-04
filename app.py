@@ -302,6 +302,43 @@ def remove_user():
 
 # -----------------------------------------------------------------------
 
+@app.route("/make_user_moderator", methods=["POST"])
+def make_user_moderator():
+    group_id = request.form.get("group_id")
+    netid = request.form.get("netid") # target
+    user_id = session["username"]
+
+    flag = True
+    # verify user is moderator in group
+    flag = flag and helper.is_user_moderator(user_id, group_id)
+    if flag:
+        print(group_id, netid)
+        moderator_methods.promote_to_moderator(
+            client, ObjectId(group_id), netid
+        )
+
+    return redirect(url_for("login"))
+
+# -----------------------------------------------------------------------
+
+@app.route("/make_user_normal", methods=["POST"])
+def make_user_normal():
+    group_id = request.form.get("group_id")
+    netid = request.form.get("netid") # target
+    user_id = session["username"]
+
+    flag = True
+    # verify user is moderator in group
+    flag = flag and helper.is_user_moderator(user_id, group_id)
+    if flag:
+        print(group_id, netid)
+        moderator_methods.demote_from_moderator(
+            client, ObjectId(group_id), netid
+        )
+
+    return redirect(url_for("login"))
+
+# -----------------------------------------------------------------------
 
 @app.route("/get_comments", methods=["GET"])
 def get_comments():
