@@ -27,3 +27,4 @@ SQLAlchemy==1.4.42
 tomli==2.0.1
 urllib3==1.26.12
 Werkzeug==2.2.2
+Gunicorn
