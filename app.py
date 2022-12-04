@@ -22,8 +22,7 @@ import helper
 
 app = Flask(__name__)
 app.secret_key = "V7nlCN90LPHOTA9PGGyf"  # placeholder
-app.config["ENV"] = "development"
-app.config["DEBUG"] = True
+app.config["ENV"] = "deployment"
 client = MongoClient(strings.uri)
 SUCCESS = "200 OK"
 
@@ -198,7 +197,7 @@ def get_posts():
         strings=strings,
         key_post_date_created="date_created",
         is_moderator=is_moderator,
-        is_member_moderator=is_member_moderator
+        is_member_moderator=is_member_moderator,
     )
 
 
@@ -282,12 +281,14 @@ def add_user():
     print(group_id)
     return redirect(url_for("login"))
 
+
 # -----------------------------------------------------------------------
+
 
 @app.route("/remove_user", methods=["POST"])
 def remove_user():
     group_id = request.form.get("group_id")
-    netid = request.form.get("netid") # target
+    netid = request.form.get("netid")  # target
     user_id = session["username"]
 
     flag = True
@@ -295,10 +296,9 @@ def remove_user():
     flag = flag and helper.is_user_moderator(user_id, group_id)
     if flag:
         print(group_id, netid)
-        moderator_methods.remove_user_from_group(
-            client, ObjectId(group_id), netid
-        )
+        moderator_methods.remove_user_from_group(client, ObjectId(group_id), netid)
     return SUCCESS
+
 
 # -----------------------------------------------------------------------
 
@@ -366,7 +366,9 @@ def like_post():
 
     return SUCCESS
 
+
 # -----------------------------------------------------------------------
+
 
 @app.route("/delete_post", methods=["POST"])
 def delete_post():
@@ -388,7 +390,9 @@ def delete_post():
         return SUCCESS
     return
 
+
 # -----------------------------------------------------------------------
+
 
 @app.route("/delete_comment", methods=["POST"])
 def delete_comment():
@@ -413,9 +417,8 @@ def delete_comment():
         )
     return SUCCESS
 
+
 # -----------------------------------------------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
+    app.run()
