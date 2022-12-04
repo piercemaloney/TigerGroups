@@ -193,6 +193,33 @@ function newPost() {
 }
 //-------------------------
 
+function newUser() {
+  let new_user = $("#new_user_id").val();
+  let url = "/add_user";
+
+  if (request != null) request.abort();
+  request = $.ajax({
+    type: "POST",
+    data: {
+      new_user: new_user,
+      group_id: getCookie("groupid"),
+    },
+    url: url,
+    success: function () {
+      $("#AddUser").modal("toggle");
+      $(".warning").css("visibility", "hidden");
+      setup();
+    },
+    error: function (error) {
+      $("#warning_user").text(error.responseText);
+      $("#warning_user").css("visibility", "visible");
+      console.log(error.responseText);
+    },
+  });
+}
+
+//-------------------------
+
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);

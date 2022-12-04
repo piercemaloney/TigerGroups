@@ -253,27 +253,24 @@ def new_group():
 # -----------------------------------------------------------------------
 
 
-@app.route("/add_user")
+@app.route("/add_user", methods=["POST"])
 def add_user():
     print("asdfsdf")
     # get the values
-    new_user = ""
-    if request.args.get("new_user") is not None:
-        new_user = request.args.get("new_user")
-    if request.args.get("group_id") is not None:
-        group_id = request.args.get("group_id")
+    new_user = request.form.get("new_user")
+    group_id = request.form.get("group_id")
     print("new_user, group_id: ", new_user, group_id)
 
     # if user doesn't exist return
     user_info = get_methods.get_user_info(client, new_user)
     if user_info == None:
         print("no user_info")
-        return redirect(url_for("login"))
+        return "User not found", 400
 
     # if user in group already return
     if helper.is_new_user_in_group(group_id, new_user):
         print("is in group")
-        return redirect(url_for("login"))
+        return "User already in group", 400
 
     # otherwise add user to group
     moderator_methods.add_user_to_group(client, ObjectId(group_id), new_user)

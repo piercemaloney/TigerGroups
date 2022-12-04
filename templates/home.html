@@ -256,26 +256,15 @@
                   ></button>
                 </div>
                 <div class="modal-body">
-                  <form
-                    action="/add_user"
-                    onsubmit="$('#group_id_user').val(getCookie('groupid'));"
-                    method="get"
-                  >
+                  
                     <div>
                       <label class="form-label">netid:</label>
-                      <input type="text" name="new_user" class="form-control" />
+                      <input type="text" name="new_user" class="form-control" id="new_user_id"/>
                     </div>
-                    <input
-                      type="hidden"
-                      name="group_id"
-                      value=""
-                      id="group_id_user"
-                    />
-                    <br />
-                    <button type="submit" class="btn btn-primary float-end">
+                    <div><h6 id="warning_user" class="warning">default</h6></div>
+                    <button type="submit" class="btn btn-primary float-end" onclick="newUser()">
                       Add User
                     </button>
-                  </form>
                 </div>
               </div>
             </div>
