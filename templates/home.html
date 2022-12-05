@@ -18,24 +18,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   </head>
   <body>
-    <div class="container-fluid">{% include "header.html" %}</div>
-    <div class="p-md-3">
+    <div class="mt-4 mb-1 mx-3">{% include "header.html" %}</div>
+    <div>
       <!-- Secondary Header (Groups, Content, Information) -->
-      <div class="container-fluid">
+      <div class="mb-4 mt-1 container-fluid">
+        <hr/>
         <div class="row">
           <!-- New Group Button -->
           <div
             class="d-flex col-md-3 no-float align-items-center justify-content-between"
           >
-            <div><h2>Groups</h2></div>
+            <div><h4>Groups</h4></div>
             <div>
               <button
                 type="button"
-                class="btn btn-primary btn-outline btn-sm"
+                class="pt-2 pb-1 border border-dark btn btn-white btn-outline btn-sm"
                 data-bs-toggle="modal"
                 data-bs-target="#NewGroup"
               >
-                + New Group
+              <h5>+ New Group</h5>
               </button>
             </div>
           </div>
@@ -142,18 +143,6 @@
                         type="radio"
                         class="btn-check"
                         name="color"
-                        id="option7"
-                        value="bg-dark text-light"
-                        autocomplete="off"
-                      />
-                      <label class="btn btn-outline-dark" for="option7"
-                        >Dark</label
-                      >
-
-                      <input
-                        type="radio"
-                        class="btn-check"
-                        name="color"
                         id="option8"
                         value="bg-secondary text-light"
                         autocomplete="off"
@@ -176,17 +165,17 @@
           <div class="list-group col">
             <div class="row">
               <div
-                class="d-flex px-md-3 col-8 no-float align-items-center justify-content-between"
+                class="d-flex px-md-5 col-8 no-float align-items-center justify-content-between"
               >
-                <div><h2>Content</h2></div>
+                <div><h4>Content</h4></div>
                 <div>
                   <button
                     type="button"
-                    class="btn btn-primary btn-outline btn-sm"
+                    class="pt-2 pb-1 border border-dark btn btn-white btn-outline btn-sm"
                     data-bs-toggle="modal"
                     data-bs-target="#NewPost"
                   >
-                    + New Post
+                  <h5>+ New Post</h5>
                   </button>
                 </div>
               </div>
@@ -194,15 +183,15 @@
               <div
                 class="d-flex col-4 no-float align-items-center justify-content-between"
               >
-                <h2>Information</h2>
+                <h4>Information</h4>
                 <div>
                   <button
                     type="button"
-                    class="btn btn-primary btn-outline btn-sm"
+                    class="pt-2 pb-1 border border-dark btn btn-white btn-outline btn-sm"
                     data-bs-toggle="modal"
                     data-bs-target="#AddUser"
                   >
-                    + Add User
+                  <h5>+ Add User</h5>
                   </button>
                 </div>
               </div>
@@ -271,16 +260,17 @@
             </div>
           </div>
         </div>
+        <hr/>
       </div>
 
       <!-- Groups -->
-      <div style="height: calc(100vh - 110px); overflow-y: scroll;" class="container-fluid">
-        <div class="row">
-          <div class="list-group col-3 no-float">
+      <div class="container-fluid">
+        <div class="mx-3 row">
+          <div style="height: calc(100vh - 220px); overflow-y: scroll;" class="example list-group col-3 no-float">
             <ul class="list-group" id="list-tab" role="tablist">
               {% for group in groups: %}
               <a
-                class="py-2 list-group-item list-group-item-action {{group[strings.key_group_color]}}"
+                class="my-2 py-4 border border-dark rounded list-group-item list-group-item-action {{group[strings.key_group_color]}}"
                 id="{{group['_id']}}"
                 onclick="getPosts('{{group["_id"]}}');;"
                 data-toggle="list"
@@ -298,6 +288,7 @@
               {% endfor %}
             </ul>
           </div>
+        
 
           <div class="list-group col" id="posts_view"></div>
         </div>
