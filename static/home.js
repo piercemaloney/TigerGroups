@@ -5,6 +5,33 @@ let post_id_del = "";
 let user_id_rem = "";
 let comment_on = false;
 
+//-------------------------
+
+function edit_description(des) {
+  console.log("des");
+  $("#EditDes textarea").text(des);
+}
+
+function change_description() {
+  let description = $("#EditDes textarea").val();
+  console.log(description);
+  let url = "/change_description";
+  request = $.ajax({
+    type: "POST",
+    data: {
+      group_id: getCookie("groupid"),
+      des: description,
+    },
+    url: url,
+    success: function () {
+      $("#EditDes").modal("toggle");
+      getPosts(getCookie("groupid"));
+    },
+  });
+}
+
+//-------------------------
+
 function new_comment(post_id) {
   console.log("new comment for post id: " + post_id);
   let url = "/new_comment";

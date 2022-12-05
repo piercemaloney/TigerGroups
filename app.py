@@ -475,6 +475,23 @@ def delete_comment():
 
 # -----------------------------------------------------------------------
 
+@app.route("/change_description", methods=["POST"])
+def change_description():
+    user_id = session["username"]
+    group_id = request.form.get("group_id")
+    des = request.form.get("des")
+    print('asdfjasdjfha;sdad')
+    print(des)
+    flag = True
+    # verify user is moderator in group
+    flag = flag and helper.is_user_moderator(user_id, group_id)
+    if flag is True:
+        moderator_methods.change_group_description(client, ObjectId(group_id), des)
+
+    return SUCCESS
+
+# -----------------------------------------------------------------------
+
 if __name__ == "__main__":
     app.run(debug=True)
 

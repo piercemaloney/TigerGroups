@@ -128,3 +128,14 @@ def remove_user_from_group(client, groupid, netid):
     user_col.update_one({'_id': netid}, {'$pull': {key_user_groupids: groupid}})
 
     # atm, not pulling posts, likes, or comments from removed user
+
+#-----------------------------------------------------------------------
+                    
+def change_group_description(client, groupid, description):
+
+    # get collection
+    db = client[database_name]
+    group_col = db[group_collection_title]
+
+    # update group table and user table
+    group_col.update_one({'_id': groupid}, {'$set': {"description": description}})
