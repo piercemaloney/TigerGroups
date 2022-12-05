@@ -3,6 +3,7 @@
 let request = null;
 let post_id_del = "";
 let user_id_rem = "";
+let comment_on = false;
 
 function new_comment(post_id) {
   console.log("new comment for post id: " + post_id);
@@ -136,16 +137,21 @@ function make_user_normal(netid) {
 //-------------------------
 
 function get_comments(post_id) {
-  let url = "/get_comments?post_id=" + post_id;
-  console.log("getting comment with post_id = " + post_id);
-  if (request != null) request.abort();
-  request = $.ajax({
-    type: "GET",
-    url: url,
-    success: function (data) {
-      handle_get_comments_response(data, post_id);
-    },
-  });
+  if (comment_on) {
+    comment_on = false;
+    $("#" + post_id).empty();
+  } else {
+    let url = "/get_comments?post_id=" + post_id;
+    if (request != null) request.abort();
+    request = $.ajax({
+      type: "GET",
+      url: url,
+      success: function (data) {
+        handle_get_comments_response(data, post_id);
+        comment_on = true;
+      },
+    });
+  }
 }
 
 function handle_get_comments_response(data, post_id) {
