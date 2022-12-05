@@ -100,11 +100,18 @@
 
 <!-- Members List -->
 <div id="members_list" style="height: calc(100vh - 220px); overflow-y: scroll;" class="example list-group-flush col-4">
+  <div>
+    <br>
+    <h5>{{current_group[strings.key_group_name]}}</h5>
+    <div><hr></div>
+    <div>{{current_group[strings.key_group_description]}}</div>
+    <br>
+  </div>
+  
   {% for user in users: %}
   <li class="list-group-item d-flex justify-content-between align-items-center">
     {{user}}
     <div class="d-flex flex-row">
-
       <!-- M -->
       {% if is_member_moderator[user] is true %}
       <h6 class="mt-2 text-muted">M&nbsp&nbsp</h6>

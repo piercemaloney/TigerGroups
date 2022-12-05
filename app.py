@@ -193,6 +193,7 @@ def get_posts():
     is_moderator = helper.is_user_moderator(user_id, request_group_id)
     return render_template(
         "posts.html",
+        current_group=current_group,
         posts=posts,
         users=users,
         strings=strings,
