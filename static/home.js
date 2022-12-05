@@ -24,6 +24,7 @@ function new_comment(post_id) {
     success: function () {
       $("#AddComment").modal("toggle");
       $("#new_comment_id").val("");
+      comment_on = false;
       get_comments(post_id);
     },
   });
@@ -51,8 +52,8 @@ function delete_post(post_id) {
 
 //-------------------------
 
-function delete_comment(comment__id, post_id) {
-  console.log("delete_comment for comment id: " + comment__id);
+function delete_comment(comment_id, post_id) {
+  console.log("delete_comment for comment id: " + comment_id);
   let url = "/delete_comment";
 
   if (request != null) request.abort();
@@ -61,12 +62,13 @@ function delete_comment(comment__id, post_id) {
     type: "POST",
     data: {
       post_id: post_id,
-      comment_id: comment__id,
+      comment_id: comment_id,
       group_id: getCookie("groupid"),
     },
     url: url,
     success: function () {
-      $(comment__id).val("");
+      $(comment_id).val("");
+      comment_on = false;
       get_comments(post_id);
     },
   });
