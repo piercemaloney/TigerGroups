@@ -36,16 +36,16 @@
                 data-bs-toggle="modal"
                 data-bs-target="#NewGroup"
               >
-              <h5>+ New Group</h5>
+              <h5>New Group</h5>
               </button>
             </div>
           </div>
           <!-- New Group Modal -->
           <div class="modal" id="NewGroup">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">New Group</h5>
+                  <h5 class="modal-title">Group</h5>
                   <button
                     type="button"
                     class="btn-close"
@@ -54,11 +54,11 @@
                 </div>
                 <div class="modal-body">
                   <form action="/new_group" method="POST">
-                    <div>
-                      <label class="form-label">Group Name</label>
+                    <div class="mb-3">
+                      <label class="form-label">Name</label>
                       <input type="text" name="title" class="form-control" />
                     </div>
-                    <div>
+                    <div class="mb-3">
                       <label class="form-label">Description</label>
                       <textarea
                         class="form-control"
@@ -66,19 +66,9 @@
                         rows="3"
                       ></textarea>
                     </div>
-                    <label>Color</label>
+                    <div class="mb-1"><label>Color</label></div>
                     <div>
-                      <input
-                        type="radio"
-                        class="btn-check"
-                        name="color"
-                        id="option1"
-                        value="bg-light text-dark"
-                        autocomplete="off"
-                        checked
-                      />
-                      <label class="btn btn-outline" for="option1">White</label>
-
+                
                       <input
                         type="radio"
                         class="btn-check"
@@ -152,8 +142,8 @@
                       >
                     </div>
                     <br />
-                    <button type="submit" class="btn btn-primary float-end">
-                      Submit
+                    <button type="submit" class="border border-dark btn btn-white btn-outline btn-sm float-end">
+                      Create
                     </button>
                   </form>
                 </div>
@@ -175,7 +165,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#NewPost"
                   >
-                  <h5>+ New Post</h5>
+                  <h5>New Post</h5>
                   </button>
                 </div>
               </div>
@@ -191,7 +181,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#AddUser"
                   >
-                  <h5>+ Add User</h5>
+                  <h5>Add User</h5>
                   </button>
                 </div>
               </div>
@@ -203,7 +193,7 @@
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">New Post</h5>
+                  <h5 class="modal-title">Post</h5>
                   <button
                     type="button"
                     class="btn-close"
@@ -211,12 +201,12 @@
                   ></button>
                 </div>
                 <div class="modal-body">
-                    <div>
+                    <div class="mb-3">
                       <label class="form-label">Title</label>
                       <input type="text" name="title" id="post-title" class="form-control" />
                     </div>
                     <div>
-                      <label class="form-label">Body</label>
+                      <label class="form-label">Post</label>
                       <textarea
                         id="post-body"
                         class="form-control"
@@ -225,7 +215,7 @@
                       ></textarea>
                     </div>
                     <div><h6 class="warning">text fields cannot be empty!</h6></div>
-                    <button type="submit" onclick="newPost()" class="btn btn-primary float-end">
+                    <button type="submit" onclick="newPost()" class="border border-dark btn btn-white btn-outline btn-sm float-end">
                       Submit
                     </button>
                 </div>
@@ -238,7 +228,7 @@
             <div class="modal-dialog">let new_user = $("#new_user_id").val();
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Add User</h5>
+                  <h5 class="modal-title">User</h5>
                   <button
                     type="button"
                     class="btn-close"
@@ -252,7 +242,7 @@
                       <input type="text" name="new_user" class="form-control" id="new_user_id"/>
                     </div>
                     <div><h6 id="warning_user" class="warning">default</h6></div>
-                    <button type="submit" class="btn btn-primary float-end" onclick="newUser()">
+                    <button type="submit" class="border border-dark btn btn-white btn-outline btn-sm float-end" onclick="newUser()">
                       Add User
                     </button>
                 </div>

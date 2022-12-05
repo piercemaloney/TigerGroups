@@ -194,9 +194,9 @@ function handle_get_comments_response(data, post_id) {
 function getPosts(id) {
   console.log("get posts with group_id:" + id);
   let url = "/get_posts?groupid=" + id;
-  $("#" + getCookie("groupid")).removeClass("border-5");
+  $("#" + getCookie("groupid")).removeClass("border-3");
   document.cookie = "groupid=" + id;
-  $("#" + id).addClass("border-5");
+  $("#" + id).addClass("border-3");
 
   if (request != null) request.abort();
   request = $.ajax({
