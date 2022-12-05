@@ -1,5 +1,6 @@
 body {
   background-color: #fff;
+  overflow: hidden;
 }
 .addtxt {
   padding-top: 10px;

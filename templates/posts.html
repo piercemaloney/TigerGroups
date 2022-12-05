@@ -1,5 +1,5 @@
-<div class="row ">
-<div class="list-group col-8 px-md-3">
+<div class="row">
+<div style="height: calc(100vh - 110px); overflow-y: scroll;" class="list-group col-8 px-md-3">
 {% for post in posts: %}
 <li class="list-group-item flex-column align-items-start">
   <div class="d-flex w-100 justify-content-between">
@@ -58,7 +58,7 @@
 
 
 <!-- Members List -->
-<div id="members_list" class="list-group list-group-flush col-4">
+<div id="members_list" style="height: calc(100vh - 110px); overflow-y: scroll;" class="list-group-flush col-4">
   {% for user in users: %}
   <li class="list-group-item d-flex justify-content-between align-items-center">
     {{user}}
