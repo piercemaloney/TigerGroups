@@ -9,7 +9,7 @@ function new_comment(post_id) {
   console.log("new comment for post id: " + post_id);
   let url = "/new_comment";
   let text_area_id = "#" + "comment_content_" + post_id;
-  let content = $(text_area_id).val();
+  let content = $("#new_comment_id").val();
   console.log("new comment: content: " + content);
 
   if (request != null) request.abort();
@@ -22,7 +22,8 @@ function new_comment(post_id) {
     },
     url: url,
     success: function () {
-      $(text_area_id).val("");
+      $("#AddComment").modal("toggle");
+      $("#new_comment_id").val("");
       get_comments(post_id);
     },
   });

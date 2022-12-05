@@ -1,0 +1,12 @@
+<div class="pt-3 pb-2">
+    <form onsubmit="new_comment({{"'"}}{{post_id}}{{"'"}});">
+      <div class="col-12 mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Comments</label>
+        <textarea class="form-control" id="comment_content_{{post_id}}" rows="3" placeholder="Add comment..."></textarea>
+      </div>
+      <div class="col-auto">
+        <button type="button" onclick="new_comment({{"'"}}{{post_id}}{{"'"}});" class="btn btn-primary mb-3">Comment</button>
+      </div>
+    </form>
+  </div>
+  

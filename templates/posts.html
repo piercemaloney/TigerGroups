@@ -39,18 +39,58 @@
   <p class="mb-1">{{post[strings.key_post_body]}}</p>
   <div><br></div>
   <div class="d-flex w-100 justify-content-between">
-    <div>
-      <button type="button" class="btn btn-outline-dark btn-sm" onclick="likePost({{'"'}}{{post['_id']}}{{'"'}})">
+
+    <div class="d-flex flex-row">
+      <div>
+        <button type="button" class="btn btn-outline-dark btn-sm" onclick="likePost({{'"'}}{{post['_id']}}{{'"'}})">
         ♥ Like
-      </button>
-      <button
+        </button>
+      </div>
+      <div class="mx-2"> 
+        <button
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#AddComment"
+        class="btn btn-outline-dark btn-sm"
+        onclick="setDeleteConfirmationPost({{'"'}}{{post['_id']}}{{'"'}})">
+        Comment
+        </button>
+      </div>
+      <div>  
+        <button
         type="button"
         class="btn btn-outline-dark btn-sm"
         onclick="get_comments({{'"'}}{{post['_id']}}{{'"'}});">
-        Comment
+        View Comments
       </button>
+    </div>
+
+    <div class="modal" id="AddComment">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Comment</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+              <div>
+                <input type="text" name="new_user" class="form-control" id="new_comment_id"/>
+              </div>
+              <div><h6 id="warning_comment" class="warning">default</h6></div>
+              <button type="submit" class="btn btn-primary float-end" onclick="new_comment(post_id_del)">
+                Add Comment
+              </button>
+          </div>
+        </div>
       </div>
-    <small>{{post[strings.key_post_numlike]}} likes</small>
+    </div>
+
+    </div>
+    <small class="mr-2">{{post[strings.key_post_numlike]}} likes</small>
   </div>
   <div id="{{post['_id']}}"></div>
 </li>

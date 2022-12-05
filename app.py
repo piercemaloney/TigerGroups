@@ -363,15 +363,37 @@ def get_comments():
     comment_ids = get_methods.get_post(client, ObjectId(post_id))[
         strings.key_post_commentids
     ]
-    for i in range(len(comment_ids)):
-        comment_ids[i] = ObjectId(comment_ids[i])
     comments = get_methods.get_comments(client, comment_ids)
+    
+    for i in range(len(comment_ids)):
+        # create date generation time field (date post was created)
+        def utc_to_local(utc_dt):
+            return utc_dt.replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
+
+        today = datetime.datetime.now()
+        created = utc_to_local(comments[i]["_id"].generation_time).replace(tzinfo=None)
+
+        time_delta = (today - created).total_seconds()
+        if time_delta < 60:
+            comments[i]["date_created"] = str(round(time_delta)) + " seconds ago"
+        elif time_delta < 3600:
+            comments[i]["date_created"] = str(round(time_delta / 60)) + " minutes ago"
+        elif time_delta < 86400:
+            comments[i]["date_created"] = str(round(time_delta / 3600)) + " hours ago"
+        else:
+            comments[i]["date_created"] = created.strftime("%B %d")
+
+        # convert object id to str
+        comments[i]["_id"] = str(comments[i]["_id"])
+
+    
     return render_template(
         "comments.html",
         comments=comments,
         strings=strings,
         post_id=post_id,
         is_moderator=is_moderator,
+        key_comment_date_created="date_created",
     )
 
 
