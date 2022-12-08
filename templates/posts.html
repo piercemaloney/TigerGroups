@@ -80,7 +80,7 @@
               <div>
                 <input type="text" name="new_user" class="form-control" id="new_comment_id"/>
               </div>
-              <div><h6 id="warning_comment" class="warning">default</h6></div>
+              <div><h6 id="warning_comment" class="warning">comment cannot be empty!</h6></div>
               <button type="submit" class="btn btn-primary float-end" onclick="new_comment(post_id_del)">
                 Add Comment
               </button>
@@ -120,7 +120,7 @@
     </div>
 
 
-    <!--Make User Moderator-->
+    <!--Change Description-->
     <div class="modal" id="EditDes">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -142,7 +142,7 @@
                   rows="8"
                 ></textarea>
               </div>
-              <div><h6 class="warning">text fields cannot be empty!</h6></div>
+              <div><h6 class="warning">description cannot be empty!</h6></div>
               <button type="submit" onclick="change_description()" class="btn btn-primary float-end">
                 Change
               </button>

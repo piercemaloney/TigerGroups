@@ -7,6 +7,12 @@ let comment_on = false;
 
 //-------------------------
 
+$(".modal-header .btn-close").click(function () {
+  $(".warning").css("visibility", "hidden");
+});
+
+//-------------------------
+
 function edit_description(des) {
   console.log("des");
   $("#EditDes textarea").text(des);
@@ -35,26 +41,28 @@ function change_description() {
 function new_comment(post_id) {
   console.log("new comment for post id: " + post_id);
   let url = "/new_comment";
-  let text_area_id = "#" + "comment_content_" + post_id;
   let content = $("#new_comment_id").val();
   console.log("new comment: content: " + content);
 
-  if (request != null) request.abort();
-
-  request = $.ajax({
-    type: "POST",
-    data: {
-      post_id: post_id,
-      content: content,
-    },
-    url: url,
-    success: function () {
-      $("#AddComment").modal("toggle");
-      $("#new_comment_id").val("");
-      comment_on = false;
-      get_comments(post_id);
-    },
-  });
+  if (content === "") {
+    $(".warning").css("visibility", "visible");
+  } else {
+    if (request != null) request.abort();
+    request = $.ajax({
+      type: "POST",
+      data: {
+        post_id: post_id,
+        content: content,
+      },
+      url: url,
+      success: function () {
+        $("#AddComment").modal("toggle");
+        $("#new_comment_id").val("");
+        comment_on = false;
+        get_comments(post_id);
+      },
+    });
+  }
 }
 
 //-------------------------
