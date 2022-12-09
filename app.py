@@ -199,7 +199,8 @@ def get_posts():
         strings=strings,
         key_post_date_created="date_created",
         is_moderator=is_moderator,
-        is_member_moderator=is_member_moderator
+        is_member_moderator=is_member_moderator,
+        user_id=user_id,
     )
 
 
@@ -288,7 +289,7 @@ def add_user():
 @app.route("/remove_user", methods=["POST"])
 def remove_user():
     group_id = request.form.get("group_id")
-    netid = request.form.get("netid") # target
+    netid = request.form.get("netid")  # target
     user_id = session["username"]
 
     flag = True
@@ -296,9 +297,7 @@ def remove_user():
     flag = flag and helper.is_user_moderator(user_id, group_id)
     if flag:
         print(group_id, netid)
-        moderator_methods.remove_user_from_group(
-            client, ObjectId(group_id), netid
-        )
+        moderator_methods.remove_user_from_group(client, ObjectId(group_id), netid)
     return SUCCESS
 
 # -----------------------------------------------------------------------
@@ -306,7 +305,7 @@ def remove_user():
 @app.route("/make_user_moderator", methods=["POST"])
 def make_user_moderator():
     group_id = request.form.get("group_id")
-    netid = request.form.get("netid") # target
+    netid = request.form.get("netid")  # target
     user_id = session["username"]
 
     flag = True
@@ -423,8 +422,12 @@ def like_post():
     user_id = session["username"]
 
     post_methods.like_post(client, user_id, ObjectId(post_id))
+    post = get_methods.get_post(client, ObjectId(post_id))
 
-    return SUCCESS
+    num_like = post[strings.key_post_numlike]
+
+    return str(num_like)
+
 
 # -----------------------------------------------------------------------
 
@@ -489,6 +492,7 @@ def change_description():
         moderator_methods.change_group_description(client, ObjectId(group_id), des)
 
     return SUCCESS
+
 
 # -----------------------------------------------------------------------
 

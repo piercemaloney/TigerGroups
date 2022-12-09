@@ -42,9 +42,22 @@
 
     <div class="d-flex flex-row">
       <div>
-        <button type="button" class="btn btn-outline-dark btn-sm" onclick="likePost({{'"'}}{{post['_id']}}{{'"'}})">
-        ♥ Like
-        </button>
+        {% set user_liked = namespace(foo=false) %}
+        {% for curr_user in post[strings.key_post_userlike]%}          
+          {% if curr_user == user_id%}
+            {% set user_liked.foo = true %}
+          {% endif %}
+        {% endfor %}
+        {% if user_liked.foo is true %}
+          <button type="button" data-bs-toggle="button" aria-pressed="true" class="btn btn-outline-dark btn-sm active" onclick="likePost({{'"'}}{{post['_id']}}{{'"'}})">
+          ♥ Like
+          </button>
+        {% else %}
+          <button type="button" data-bs-toggle="button" aria-pressed="true" class="btn btn-outline-dark btn-sm" onclick="likePost({{'"'}}{{post['_id']}}{{'"'}})">
+          ♥ Like
+          </button>
+        {%endif%}
+        
       </div>
       <div class="mx-2"> 
         <button
@@ -90,7 +103,7 @@
     </div>
 
     </div>
-    <small class="mr-2">{{post[strings.key_post_numlike]}} likes</small>
+    <small class="mr-2" id="num_like{{post['_id']}}">{{post[strings.key_post_numlike]}} likes</small>
   </div>
   <div id="{{post['_id']}}"></div>
 </li>
