@@ -61,6 +61,7 @@ function new_comment(post_id) {
       },
       url: url,
       success: function () {
+        $("#AddComment input").val("");
         $("#AddComment").modal("toggle");
         $("#new_comment_id").val("");
         comment_on = false;
@@ -280,6 +281,8 @@ function newPost() {
       },
       url: url,
       success: function () {
+        $("#NewPost input").val("");
+        $("#NewPost textarea").val("");
         $("#NewPost").modal("toggle");
         $(".warning").css("visibility", "hidden");
         setup();
@@ -302,6 +305,7 @@ function newUser() {
     },
     url: url,
     success: function () {
+      $("#AddUser input").val("");
       $("#AddUser").modal("toggle");
       $(".warning").css("visibility", "hidden");
       setup();
