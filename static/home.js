@@ -7,7 +7,7 @@ let comment_on = false;
 
 //-------------------------
 
-$(".modal-header .btn-close").click(function () {
+$(".btn-close").click(function () {
   $(".warning").css("visibility", "hidden");
 });
 
@@ -22,18 +22,23 @@ function change_description() {
   let description = $("#EditDes textarea").val();
   console.log(description);
   let url = "/change_description";
-  request = $.ajax({
-    type: "POST",
-    data: {
-      group_id: getCookie("groupid"),
-      des: description,
-    },
-    url: url,
-    success: function () {
-      $("#EditDes").modal("toggle");
-      getPosts(getCookie("groupid"));
-    },
-  });
+
+  if (description === "") {
+    $(".warning").css("visibility", "visible");
+  } else {
+    request = $.ajax({
+      type: "POST",
+      data: {
+        group_id: getCookie("groupid"),
+        des: description,
+      },
+      url: url,
+      success: function () {
+        $("#EditDes").modal("toggle");
+        getPosts(getCookie("groupid"));
+      },
+    });
+  }
 }
 
 //-------------------------
@@ -211,6 +216,10 @@ function getPosts(id) {
     type: "GET",
     url: url,
     success: handleResponse,
+    error: function () {
+      document.cookie = "groupid=638585e9048ae719be1cba4c";
+      location.reload();
+    },
   });
 }
 

@@ -154,7 +154,7 @@ def get_posts():
     # check if user is authorized
     is_user_valid = helper.is_user_in_group(request_group_id)
     if is_user_valid is False:
-        return redirect(url_for("permission_denied"))
+        return 'removing last user in group', 400
 
     # get information to display posts
     current_group = get_methods.get_group(client, ObjectId(request_group_id))
@@ -275,7 +275,7 @@ def add_user():
     # if user in group already return
     if helper.is_new_user_in_group(group_id, new_user):
         print("is in group")
-        return "user already in group!", 400
+        return "user already in group", 400
 
     # otherwise add user to group
     moderator_methods.add_user_to_group(client, ObjectId(group_id), new_user)

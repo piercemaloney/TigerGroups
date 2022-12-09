@@ -178,7 +178,9 @@
         </button>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#DelUser" onclick="setRemoveConfirmationUser({{'"'}}{{user}}{{'"'}})">Remove User</a></li>
+          {% if is_member_moderator[user] is false %}
           <li> <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#MakeMod" onclick="setRemoveConfirmationUser({{'"'}}{{user}}{{'"'}})">Make Moderator</a></li>
+          {% endif %}
           {% if is_member_moderator[user] is true %}
           <li> <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#MakeNormal" onclick="setRemoveConfirmationUser({{'"'}}{{user}}{{'"'}})">Remove Moderator</a></li>
           {% endif %}
