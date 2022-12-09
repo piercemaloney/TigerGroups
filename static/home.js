@@ -252,13 +252,15 @@ function likePost(post_id) {
       post_id: post_id,
     },
     url: url,
-    success: handle_like_response,
+    success: function (data){
+      handle_like_response(data, post_id)
+    },
   });
 }
 
 function handle_like_response(data, post_id) {
   console.log("got reponse post_id= " + post_id);
-  $("#" + post_id).html(data);
+  $("#num_like"+post_id).html(data+" likes");
 }
 
 //-------------------------
