@@ -7,6 +7,7 @@ from flask import (
     render_template,
     make_response,
 )
+
 from cas import CASClient
 import database.get_methods as get_methods
 import database.post_methods as post_methods
