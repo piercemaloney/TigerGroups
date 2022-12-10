@@ -387,6 +387,10 @@ def get_comments():
         # convert object id to str
         comments[i]["_id"] = str(comments[i]["_id"])
 
+    # show nothing if no comments
+    if len(comments) == 0:
+        return None
+
     
     return render_template(
         "comments.html",
