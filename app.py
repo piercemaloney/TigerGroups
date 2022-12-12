@@ -35,7 +35,7 @@ PRINCETON_GROUP_ID = "638585e9048ae719be1cba4c"
 
 cas_client = CASClient(
     version=3,
-    service_url="http://localhost:5000/login?next=%2Fset_default_cookie",
+    service_url="https://tigergroups2.onrender.com",
     server_url="https://fed.princeton.edu/cas/",
 )
 
