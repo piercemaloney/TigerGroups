@@ -35,6 +35,8 @@ PRINCETON_GROUP_ID = "638585e9048ae719be1cba4c"
 
 cas_client = CASClient(
     version=3,
+    # for localhost "http://localhost:5000/login?next=%2Fset_default_cookie"
+    # for render "https://tigergroups2.onrender.com/login?next=%2Fset_default_cookie"
     service_url="https://tigergroups2.onrender.com/login?next=%2Fset_default_cookie",
     server_url="https://fed.princeton.edu/cas/",
 )
@@ -388,8 +390,8 @@ def get_comments():
         comments[i]["_id"] = str(comments[i]["_id"])
 
     # show nothing if no comments
-    if len(comments) == 0:
-        return None
+    # if len(comments) == 0:
+    #     return None
 
     
     return render_template(
