@@ -3,12 +3,12 @@
 
 {% for comment in comments: %}
 <div class="row">
-  <div class="col-11">
+  <div class="d-flex justify-content-between">
     <p>{{comment[strings.key_comment_content]}}</p>
-  </div>
-  <div class="col"> 
     {% if is_moderator is true %}
-    <button type="button" class="btn-close align-middle" aria-label="Close" onclick="delete_comment({{'"'}}{{comment['_id']}}{{'"'}}, {{'"'}}{{post_id}}{{'"'}})"></button>
+    <div class="col-1">
+      <button type="button" class="btn-close align-middle" aria-label="Close" onclick="delete_comment({{'"'}}{{comment['_id']}}{{'"'}}, {{'"'}}{{post_id}}{{'"'}})"></button>
+    </div>
     {% endif %}
   </div>
 </div>
